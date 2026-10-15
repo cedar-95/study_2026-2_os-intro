@@ -1,0 +1,140 @@
+---
+## Author
+author:
+  name: Чжу Ино
+  affiliation:
+    - name: Российский университет дружбы народов
+      country: Российская Федерация
+      postal-code: 117198
+      city: Москва
+      address: ул. Миклухо-Маклая, д. 6
+## Title
+title: Лабораторная работа № 14
+subtitle:  Расширенное программирование в командном процессоре
+date: today
+date-format: "YYYY-MM-DD"
+format:
+  beamer:
+    theme: "Madrid"
+    colortheme: "default"
+    lang: ru
+    toc: false
+    slide-level: 2
+    mainfont: "DejaVu Serif"
+    sansfont: "DejaVu Sans"
+    monofont: "DejaVu Sans Mono"
+  html:
+    embed-resources: true
+---
+
+# Информация
+
+## Докладчик
+
+::: {.columns align=center}
+::: {.column width="50%"}
+- Чжу Ино
+- группа НПИбд-03-25
+- Российский университет дружбы народов им. П. Лумумбы
+- Студенческий билет: 1132258331
+:::
+::: {.column width="50%"}
+:::
+:::
+
+# Вводная часть
+
+## Цель работы
+
+- Изучить основы программирования в оболочке
+- Научиться писать сложные командные файлы
+
+## Задачи
+
+- Механизм семафоров
+- Реализация `man`
+- Генерация случайных строк с `$RANDOM`
+
+# Теоретические сведения
+
+## Семафоры
+
+```bash
+while [ -f "$SEMFILE" ]; do
+    sleep 1
+done
+touch "$SEMFILE"
+```
+
+## man
+
+```bash
+zcat /usr/share/man/man1/ls.1.gz | less
+```
+
+## $RANDOM
+
+```bash
+echo $RANDOM  # 0..32767
+```
+
+## Синтаксис
+
+```bash
+while [ $1 != "exit" ]  # правильно
+```
+
+# Выполнение лабораторной работы
+
+## Семафор
+
+```bash
+#!/bin/bash
+while [ -f "$SEMFILE" ]; do sleep 1; done
+touch "$SEMFILE"
+sleep 3
+rm -f "$SEMFILE"
+```
+
+![Семафор](screenshots/Lab14_01_semaphore_script.png)
+
+![Запуск](screenshots/Lab14_03_semaphore_run.png)
+
+## man
+
+```bash
+#!/bin/bash
+zcat /usr/share/man/man1/$1.1.gz | less
+```
+
+![man](screenshots/Lab14_06_man_helper_script.png)
+
+![ls](screenshots/Lab14_08_man_helper_ls.png)
+
+## $RANDOM
+
+```bash
+for i in $(seq 1 10); do
+    R=$((RANDOM % 52))
+    ...
+done
+```
+
+![random](screenshots/Lab14_10_random_script.png)
+
+![Запуск](screenshots/Lab14_12_random_10.png)
+
+# Результаты
+
+## Результаты работы
+
+- Написаны 3 командных файла
+- Освоен механизм семафоров
+- Реализована команда `man`
+- Освоена генерация случайных строк
+
+# Заключение
+
+## Главный вывод
+
+Изучены расширенные возможности bash: семафоры, `man`, `$RANDOM`.
