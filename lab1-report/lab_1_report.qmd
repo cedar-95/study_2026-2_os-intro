@@ -1,0 +1,227 @@
+---
+title: "Лабораторная работа № 2. Первоначальная настройка git"
+subtitle: "НПИбд-03-25"
+author: "Чжу Ино"
+date: today
+date-format: "YYYY-MM-DD"
+format:
+  html:
+    toc: true
+    toc-title: Содержание
+    number-sections: true
+    fig-cap-location: bottom
+    fig-align: center
+    embed-resources: true
+  pdf:
+    toc: true
+    toc-title: Содержание
+    lof: true
+    lof-title: Список иллюстраций
+    number-sections: true
+    fig-cap-location: bottom
+    fig-align: center
+    documentclass: article
+    fontsize: 12pt
+    linestretch: 1.2
+    geometry:
+      - top=2cm
+      - bottom=2cm
+      - left=2.5cm
+      - right=2.5cm
+    lang: ru
+    colorlinks: true
+  docx:
+    toc: true
+    toc-title: Содержание
+    number-sections: true
+---
+
+# Цель работы
+
+Изучить идеологию и применение средств контроля версий. Освоить умения по работе с git.
+
+# Задачи
+
+1. Установить git и gh.
+2. Выполнить базовую настройку git.
+3. Создать ключи SSH.
+4. Создать ключи PGP.
+5. Настроить GitHub.
+6. Добавить SSH-ключ в GitHub.
+7. Настроить gh.
+8. Создать репозиторий курса на основе шаблона.
+9. Настроить каталог курса.
+
+# Установка программного обеспечения
+
+Выполнена установка git и gh:
+
+```bash
+sudo dnf -y install git
+sudo dnf -y install gh
+```
+
+![Версия git](screenshots/01_git_version.png){#fig-git width=80%}
+
+![Версия gh](screenshots/02_gh_version.png){#fig-gh width=80%}
+
+# Базовая настройка git
+
+Задано имя и email владельца репозитория, настроен utf-8, задано имя начальной ветки master, параметры autocrlf и safecrlf:
+
+```bash
+git config --global user.name "Чжу Ино"
+git config --global user.email "1132258331@rudn.ru"
+git config --global core.quotepath false
+git config --global init.defaultBranch master
+git config --global core.autocrlf input
+git config --global core.safecrlf warn
+```
+
+![Глобальная конфигурация git](screenshots/03_git_config.png){#fig-config width=80%}
+
+# Создание ключей SSH
+
+Сгенерированы ключи RSA (4096 бит) и Ed25519.
+
+![Список SSH-ключей](screenshots/04_ssh_keys.png){#fig-ssh-keys width=80%}
+
+Содержимое открытого ключа Ed25519:
+
+![Открытый ключ SSH](screenshots/05_ssh_pubkey.png){#fig-ssh-pub width=80%}
+
+# Создание ключей PGP
+
+Сгенерирован PGP-ключ (RSA 4096).
+
+![Список PGP-ключей](screenshots/06_pgp_keys.png){#fig-pgp-keys width=80%}
+
+Экспорт открытого PGP-ключа:
+
+![Открытый PGP-ключ](screenshots/07_pgp_pubkey.png){#fig-pgp-pub width=80%}
+
+# Настройка GitHub
+
+SSH-ключ добавлен в учётную запись GitHub:
+
+![SSH-ключ на GitHub](screenshots/14_github_ssh.png){#fig-gh-ssh width=80%}
+
+PGP-ключ добавлен в учётную запись GitHub:
+
+![PGP-ключ на GitHub](screenshots/15_github_gpg.png){#fig-gh-gpg width=80%}
+
+Настроены автоматические подписи коммитов:
+
+```bash
+git config --global user.signingkey B70BAC537B9E029A
+git config --global commit.gpgsign true
+git config --global gpg.program $(which gpg)
+```
+
+# Настройка gh
+
+Выполнена авторизация gh:
+
+```bash
+gh auth login
+```
+
+![Статус gh](screenshots/08_gh_auth.png){#fig-gh-auth width=80%}
+
+# Шаблон для рабочего пространства
+
+## Создание репозитория курса
+
+Создан репозиторий `study_2026-2_os-intro` на основе шаблона:
+
+```bash
+mkdir -p ~/work/study/2026-2/
+cd ~/work/study/2026-2/
+gh repo create study_2026-2_os-intro --template=yamadharma/course-directory-student-template --public
+git clone --recursive git@github.com:cedar-95/study_2026-2_os-intro.git os-intro
+```
+
+![Клонирование репозитория](screenshots/09_clone_repo.png){#fig-clone width=80%}
+
+## Настройка каталога курса
+
+```bash
+cd ~/work/study/2026-2/os-intro
+echo os-intro > COURSE
+make prepare
+```
+
+![Структура курса](screenshots/10_course_structure.png){#fig-structure width=80%}
+
+![Файл COURSE](screenshots/13_course_file.png){#fig-course width=80%}
+
+![Подписанный коммит](screenshots/11_signed_commit.png){#fig-signed width=80%}
+
+![История коммитов](screenshots/12_git_log.png){#fig-log width=80%}
+
+![Репозиторий на GitHub](screenshots/16_github_repo.png){#fig-repo width=80%}
+
+# Выводы
+
+В ходе лабораторной работы изучена идеология систем контроля версий. Освоены навыки работы с git: базовая настройка, создание ключей SSH и PGP, настройка GitHub, авторизация gh, создание репозитория курса на основе шаблона.
+
+# Контрольные вопросы
+
+**1. Что такое системы контроля версий (VCS) и для решения каких задач они предназначаются?**
+
+VCS — системы, позволяющие фиксировать изменения в проекте, совмещать изменения разных участников, откатывать к предыдущим версиям.
+
+**2. Объясните понятия VCS: хранилище, commit, история, рабочая копия.**
+
+- Хранилище — место хранения всех версий проекта.
+- Commit — зафиксированное изменение.
+- История — последовательность коммитов.
+- Рабочая копия — локальная версия файлов пользователя.
+
+**3. Чем отличаются централизованные и децентрализованные VCS?**
+
+- Централизованные (CVS, Subversion) — единый сервер.
+- Децентрализованные (Git, Bazaar, Mercurial) — у каждого полная копия репозитория.
+
+**4. Опишите действия с VCS при единоличной работе с хранилищем.**
+
+Получение версии → изменения → фиксация → размещение новой версии в хранилище.
+
+**5. Опишите порядок работы с общим хранилищем VCS.**
+
+Получение обновлений → работа в локальной ветке → фиксация изменений → отправка в центральный репозиторий.
+
+**6. Каковы основные задачи, решаемые инструментальным средством git?**
+
+Управление версиями, ветвление, слияние, работа с удалёнными репозиториями.
+
+**7. Назовите и дайте краткую характеристику командам git.**
+
+- `git init` — создание репозитория.
+- `git add` — добавление файлов в индекс.
+- `git commit` — фиксация изменений.
+- `git push` — отправка в удалённый репозиторий.
+- `git pull` — получение изменений.
+- `git status` — статус.
+- `git diff` — просмотр изменений.
+- `git branch` — работа с ветками.
+- `git checkout` — переключение веток.
+- `git merge` — слияние.
+
+**8. Приведите примеры использования при работе с локальным и удалённым репозиториями.**
+
+Локальный: `git init`, `git add`, `git commit`. Удалённый: `git remote add`, `git push`, `git pull`.
+
+**9. Что такое и зачем могут быть нужны ветви (branches)?**
+
+Ветви — параллельные линии разработки. Позволяют вести работу над несколькими функциями одновременно.
+
+**10. Как и зачем можно игнорировать некоторые файлы при commit?**
+
+Файл `.gitignore` содержит шаблоны игнорируемых файлов (временные, объектные, кэш). Нужно, чтобы в репозиторий не попадали лишние файлы.
+
+# Список литературы
+
+1. Чакон С., Штрауб Б. Git для профессионального программиста. — СПб. : Питер, 2016.
+2. Лоэл Д., Маккалоу М. Pro Git. — Apress, 2014.
+3. Колисниченко Д. Н. Самоучитель системного администратора Linux. — БХВ-Петербург, 2011.
