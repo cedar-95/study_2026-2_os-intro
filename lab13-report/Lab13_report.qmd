@@ -1,0 +1,331 @@
+---
+title: "Лабораторная работа № 13. Программирование в командном процессоре ОС UNIX. Ветвления и циклы"
+subtitle: "НПИбд-03-25"
+author: "Чжу Ино"
+date: today
+date-format: "YYYY-MM-DD"
+format:
+  pdf:
+    toc: true
+    toc-title: Содержание
+    lof: true
+    lof-title: Список иллюстраций
+    number-sections: true
+    fig-cap-location: bottom
+    fig-align: center
+    documentclass: article
+    fontsize: 12pt
+    linestretch: 1.2
+    geometry:
+      - top=2cm
+      - bottom=2cm
+      - left=2.5cm
+      - right=2.5cm
+    mainfont: "DejaVu Serif"
+    sansfont: "DejaVu Sans"
+    monofont: "DejaVu Sans Mono"
+    lang: ru
+    colorlinks: true
+  docx:
+    toc: true
+    toc-title: Содержание
+    number-sections: true
+  html:
+    toc: true
+    toc-title: Содержание
+    number-sections: true
+    embed-resources: true
+---
+
+# Цель работы
+
+Изучить основы программирования в оболочке ОС UNIX. Научиться писать более сложные командные файлы с использованием логических управляющих конструкций и циклов.
+
+# Задачи
+
+1. Написать командный файл с использованием `getopts` и `grep`.
+2. Написать программу на C, определяющую знак числа.
+3. Написать командный файл для создания и удаления N файлов.
+4. Написать командный файл для архивирования файлов.
+
+# Теоретические сведения
+
+## Команда getopts
+
+Позволяет разбирать опции командной строки:
+
+```bash
+while getopts "i:o:p:Cn" opt; do
+    case $opt in
+        i) input=$OPTARG ;;
+        o) output=$OPTARG ;;
+        p) pattern=$OPTARG ;;
+        C) case_sensitive="-i" ;;
+        n) line_numbers="-n" ;;
+    esac
+done
+```
+
+## Команда grep
+
+```bash
+grep [-опции] шаблон [файл...]
+```
+
+- `-i` — игнорировать регистр
+- `-n` — номера строк
+
+## Операторы управления
+
+- `if ... then ... fi`
+- `while ... do ... done`
+- `until ... do ... done`
+- `for ... in ... do ... done`
+- `case ... esac`
+
+## Прерывание цикла
+
+- `break` — завершить цикл
+- `continue` — завершить итерацию
+
+## Команды true и false
+
+- `true` — всегда возвращает 0
+- `false` — всегда возвращает 1
+
+## Условие if test -f
+
+Проверяет, является ли файл обычным файлом.
+
+## Отличие while от until
+
+- `while` — выполняется, пока условие истинно
+- `until` — выполняется, пока условие ложно
+
+# Выполнение лабораторной работы
+
+## Скрипт 1: mygrep
+
+```bash
+#!/bin/bash
+while getopts "i:o:p:Cn" opt; do
+    case $opt in
+        i) input=$OPTARG ;;
+        o) output=$OPTARG ;;
+        p) pattern=$OPTARG ;;
+        C) case_sensitive="-i" ;;
+        n) line_numbers="-n" ;;
+    esac
+done
+
+if [ -n "$output" ]; then
+    grep $case_sensitive $line_numbers "$pattern" "$input" > "$output"
+else
+    grep $case_sensitive $line_numbers "$pattern" "$input"
+fi
+```
+
+![Скрипт mygrep](screenshots/Lab13_01_mygrep_script.png){#fig-mygrep width=80%}
+
+```bash
+chmod +x mygrep.sh
+```
+
+![chmod](screenshots/Lab13_02_mygrep_chmod.png){#fig-mygrep-chmod width=80%}
+
+```bash
+echo -e "hello\nworld\nhello world" > test.txt
+./mygrep.sh -i test.txt -p hello
+```
+
+![Запуск mygrep](screenshots/Lab13_03_mygrep_run.png){#fig-mygrep-run width=80%}
+
+```bash
+./mygrep.sh -i test.txt -o result.txt -p hello
+cat result.txt
+```
+
+![Вывод в файл](screenshots/Lab13_04_mygrep_output.png){#fig-mygrep-output width=80%}
+
+## Скрипт 2: C-программа
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+int main(int argc, char *argv[]) {
+    if (argc != 2) {
+        printf("Usage: %s <number>\n", argv[0]);
+        return 1;
+    }
+    int n = atoi(argv[1]);
+    if (n > 0) {
+        printf("Число %d больше нуля\n", n);
+        return 0;
+    } else if (n < 0) {
+        printf("Число %d меньше нуля\n", n);
+        return 2;
+    } else {
+        printf("Число равно нулю\n");
+        return 3;
+    }
+}
+```
+
+![C-программа](screenshots/Lab13_05_c_script.png){#fig-c width=80%}
+
+```bash
+gcc check_num.c -o check_num
+ls -l check_num
+```
+
+![Компиляция](screenshots/Lab13_06_c_compile.png){#fig-c-compile width=80%}
+
+```bash
+./check_num 5
+./check_num -3
+./check_num 0
+```
+
+![Запуск](screenshots/Lab13_07_c_run.png){#fig-c-run width=80%}
+
+```bash
+./check_num 5
+echo "Код возврата: $?"
+./check_num -3
+echo "Код возврата: $?"
+./check_num 0
+echo "Код возврата: $?"
+```
+
+![Код возврата](screenshots/Lab13_08_c_exit_code.png){#fig-c-exit width=80%}
+
+## Скрипт 3: создание файлов
+
+```bash
+#!/bin/bash
+N=$1
+if [ -z "$N" ]; then
+    echo "Укажите число файлов"
+    exit 1
+fi
+
+for i in $(seq 1 $N); do
+    touch "file_$i.txt"
+done
+ls file_*.txt
+
+for i in $(seq 1 $N); do
+    rm "file_$i.txt"
+done
+echo "Файлы удалены"
+ls file_*.txt 2>/dev/null || echo "Файлов не осталось"
+```
+
+![Скрипт create](screenshots/Lab13_09_create_script.png){#fig-create width=80%}
+
+```bash
+chmod +x create_files.sh
+./create_files.sh 5
+```
+
+![Запуск](screenshots/Lab13_10_create_run.png){#fig-create-run width=80%}
+
+```bash
+./create_files.sh 3
+```
+
+![create 3](screenshots/Lab13_11_create_3.png){#fig-create-3 width=80%}
+
+## Скрипт 4: архивирование
+
+```bash
+#!/bin/bash
+DIR="${1:-.}"
+OUT="${2:-archive.tar}"
+
+tar -cvf "$OUT" "$DIR"
+
+find "$DIR" -type f -mtime -7 -print0 | tar -cvf "recent_$OUT" --null -T -
+```
+
+![Скрипт archive](screenshots/Lab13_12_archive_script.png){#fig-archive width=80%}
+
+```bash
+chmod +x archive.sh
+./archive.sh ~/work/os/lab06 all_files.tar
+ls -lh all_files.tar
+```
+
+![Запуск archive](screenshots/Lab13_13_archive_run.png){#fig-archive-run width=80%}
+
+```bash
+ls -lh recent_all_files.tar
+tar -tvf recent_all_files.tar
+```
+
+![7 дней](screenshots/Lab13_14_archive_recent.png){#fig-archive-recent width=80%}
+
+```bash
+./archive.sh ~/work/os lab06.tar
+ls -lh lab06.tar recent_lab06.tar
+```
+
+![Другой каталог](screenshots/Lab13_15_archive_lab06.png){#fig-archive-lab06 width=80%}
+
+## Все скрипты
+
+```bash
+ls -la ~/work/os/lab06/
+```
+
+![Все скрипты](screenshots/Lab13_16_all_scripts.png){#fig-all width=80%}
+
+```bash
+./mygrep.sh -i test.txt -p hello && \
+./check_num 5 && \
+./create_files.sh 2 && \
+./archive.sh . test.tar
+```
+
+![Запуск всех](screenshots/Lab13_17_all_run.png){#fig-all-run width=80%}
+
+# Выводы
+
+В ходе работы изучены логические управляющие конструкции и циклы в bash. Написаны четыре командных файла: `mygrep` с `getopts`, C-программа определения знака числа, скрипт создания/удаления файлов, скрипт архивирования с фильтром по времени.
+
+# Контрольные вопросы
+
+**1. Назначение команды getopts?**
+
+Разбор опций командной строки.
+
+**2. Отношение метасимволов к генерации имён файлов?**
+
+Метасимволы `*`, `?`, `[...]` используются для шаблонов имён файлов.
+
+**3. Операторы управления действиями.**
+
+`if`, `case`, `while`, `until`, `for`.
+
+**4. Операторы для прерывания цикла.**
+
+`break`, `continue`.
+
+**5. Для чего нужны команды false и true?**
+
+`true` всегда возвращает 0 (истина), `false` — 1 (ложь). Используются в условиях.
+
+**6. Что означает `if test -f man$s/$i.$s`?**
+
+Проверка, является ли файл `man$s/$i.$s` обычным файлом.
+
+**7. Различия while и until.**
+
+`while` — пока условие истинно, `until` — пока условие ложно.
+
+# Список литературы
+
+1. Курячий К. В. Операционная система UNIX. — М. : ИНТУИТ, 2016.
+2. Робачевский А., Немнюгин С., Стесик О. Операционная система UNIX. — БХВ-Петербург, 2010.
+3. Колисниченко Д. Н. Самоучитель системного администратора Linux. — БХВ-Петербург, 2011.
