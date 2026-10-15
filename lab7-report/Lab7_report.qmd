@@ -1,0 +1,335 @@
+---
+title: "Лабораторная работа № 7. Анализ файловой системы Linux. Команды для работы с файлами и каталогами"
+subtitle: "НПИбд-03-25"
+author: "Чжу Ино"
+date: today
+date-format: "YYYY-MM-DD"
+format:
+  pdf:
+    toc: true
+    toc-title: Содержание
+    lof: true
+    lof-title: Список иллюстраций
+    number-sections: true
+    fig-cap-location: bottom
+    fig-align: center
+    documentclass: article
+    fontsize: 12pt
+    linestretch: 1.2
+    geometry:
+      - top=2cm
+      - bottom=2cm
+      - left=2.5cm
+      - right=2.5cm
+    mainfont: "DejaVu Serif"
+    sansfont: "DejaVu Sans"
+    monofont: "DejaVu Sans Mono"
+    lang: ru
+    colorlinks: true
+  docx:
+    toc: true
+    toc-title: Содержание
+    number-sections: true
+  html:
+    toc: true
+    toc-title: Содержание
+    number-sections: true
+    embed-resources: true
+---
+
+# Цель работы
+
+Ознакомление с файловой системой Linux, её структурой, именами и содержанием каталогов. Приобретение практических навыков по применению команд для работы с файлами и каталогами, по управлению процессами, по проверке использования диска и обслуживанию файловой системы.
+
+# Задачи
+
+1. Изучить команды для работы с файлами и каталогами.
+2. Освоить копирование, перемещение и переименование файлов и каталогов.
+3. Изучить права доступа и команду `chmod`.
+4. Проанализировать файловую систему.
+
+# Теоретические сведения
+
+## Команды для работы с файлами
+
+- `touch имя_файла` — создание файла
+- `cat имя_файла` — просмотр файла
+- `less имя_файла` — постраничный просмотр
+- `head [-n] имя_файла` — первые n строк
+- `tail [-n] имя_файла` — последние n строк
+
+## Копирование
+
+```bash
+cp [-опции] исходный_файл целевой_файл
+```
+
+- `-i` — запрос подтверждения
+- `-r` — рекурсивное копирование каталогов
+
+## Перемещение и переименование
+
+```bash
+mv [-опции] старый_файл новый_файл
+```
+
+## Права доступа
+
+Каждый файл или каталог имеет права:
+
+- тип файла (`-` — файл, `d` — каталог)
+- права владельца (`rwx`)
+- права группы (`rwx`)
+- права остальных (`rwx`)
+
+## Изменение прав доступа
+
+```bash
+chmod режим имя_файла
+```
+
+- `u` — владелец
+- `g` — группа
+- `o` — остальные
+- `+` — дать право
+- `-` — лишить права
+- `=` — установить право
+
+Числовая запись: `7` = `rwx`, `6` = `rw-`, `5` = `r-x`, `4` = `r--`.
+
+## Анализ файловой системы
+
+- `mount` — просмотр смонтированных файловых систем
+- `cat /etc/fstab` — таблица файловых систем
+- `df` — объём свободного пространства
+- `fsck` — проверка целостности
+
+# Выполнение лабораторной работы
+
+## Создание и просмотр файла
+
+```bash
+cd ~
+touch abc1
+echo "hello world" > abc1
+cat abc1
+```
+
+![Создание и просмотр](screenshots/Lab7_01_touch_cat.png){#fig-touch width=80%}
+
+## Постраничный просмотр
+
+```bash
+less abc1
+```
+
+![less](screenshots/Lab7_02_less.png){#fig-less width=80%}
+
+## Команда head
+
+```bash
+head abc1
+head -3 abc1
+```
+
+![head](screenshots/Lab7_03_head.png){#fig-head width=80%}
+
+## Команда tail
+
+```bash
+tail abc1
+tail -3 abc1
+```
+
+![tail](screenshots/Lab7_04_tail.png){#fig-tail width=80%}
+
+## Несколько файлов
+
+```bash
+echo "line1" > abc2
+cat abc1 abc2
+```
+
+![cat двух файлов](screenshots/Lab7_05_cat_two.png){#fig-cat-two width=80%}
+
+## Копирование файла
+
+```bash
+cp abc1 april
+cp abc1 may
+ls
+```
+
+![cp файла](screenshots/Lab7_06_cp_file.png){#fig-cp width=80%}
+
+## Копирование нескольких файлов
+
+```bash
+mkdir monthly
+cp april may monthly
+ls monthly
+```
+
+![cp нескольких файлов](screenshots/Lab7_07_cp_multiple.png){#fig-cp-multi width=80%}
+
+## Рекурсивное копирование
+
+```bash
+mkdir monthly.00
+cp -r monthly monthly.00
+ls monthly.00
+```
+
+![cp -r](screenshots/Lab7_08_cp_r.png){#fig-cp-r width=80%}
+
+## Копирование в /tmp
+
+```bash
+cp -r monthly.00 /tmp
+ls /tmp
+```
+
+![cp в /tmp](screenshots/Lab7_09_cp_tmp.png){#fig-cp-tmp width=80%}
+
+## Переименование файла
+
+```bash
+mv april july
+ls
+```
+
+![mv переименование](screenshots/Lab7_10_mv_rename.png){#fig-mv-rename width=80%}
+
+## Перемещение файла в каталог
+
+```bash
+mv july monthly.00
+ls monthly.00
+```
+
+![mv в каталог](screenshots/Lab7_11_mv_to_dir.png){#fig-mv-dir width=80%}
+
+## Переименование каталога
+
+```bash
+mv monthly.00 monthly.01
+ls
+```
+
+![mv каталога](screenshots/Lab7_12_mv_dir.png){#fig-mv-dir2 width=80%}
+
+## Перемещение каталога
+
+```bash
+mkdir reports
+mv monthly.01 reports
+ls reports
+```
+
+![mv каталога в каталог](screenshots/Lab7_13_mv_dir_to_dir.png){#fig-mv-dir-dir width=80%}
+
+## chmod — символьная запись
+
+```bash
+chmod u+x abc1
+ls -l abc1
+chmod u-x abc1
+ls -l abc1
+```
+
+![chmod символическая](screenshots/Lab7_14_chmod_symbolic.png){#fig-chmod-sym width=80%}
+
+## chmod — числовая запись
+
+```bash
+touch may
+chmod 755 may
+ls -l may
+```
+
+![chmod числовая](screenshots/Lab7_15_chmod_numeric.png){#fig-chmod-num width=80%}
+
+## Проверка прав
+
+```bash
+ls -l abc1
+ls -l may
+```
+
+![Проверка прав](screenshots/Lab7_16_chmod_check.png){#fig-chmod-check width=80%}
+
+## Анализ файловой системы
+
+```bash
+mount | head -20
+df -h
+cat /etc/fstab
+```
+
+![Файловая система](screenshots/Lab7_17_filesystem.png){#fig-fs width=80%}
+
+# Выводы
+
+В ходе работы изучена файловая система Linux, её структура, имена и содержание каталогов. Освоены команды для работы с файлами и каталогами: `touch`, `cat`, `less`, `head`, `tail`, `cp`, `mv`. Изучены права доступа и команда `chmod`. Проанализирована файловая система с помощью `mount`, `df`, `cat /etc/fstab`.
+
+# Контрольные вопросы
+
+**1. Что такое файловая система?**
+
+Способ организации и хранения файлов на носителе.
+
+**2. Какие команды используются для просмотра файлов?**
+
+`cat`, `less`, `head`, `tail`.
+
+**3. Как скопировать файл?**
+
+```bash
+cp исходный_файл целевой_файл
+```
+
+**4. Как скопировать каталог?**
+
+```bash
+cp -r исходный_каталог целевой_каталог
+```
+
+**5. Как переименовать файл?**
+
+```bash
+mv старое_имя новое_имя
+```
+
+**6. Как переместить файл в каталог?**
+
+```bash
+mv файл каталог/
+```
+
+**7. Что такое права доступа?**
+
+Права на чтение (`r`), запись (`w`) и выполнение (`x`) для владельца, группы и остальных.
+
+**8. Как изменить права доступа?**
+
+```bash
+chmod режим имя_файла
+```
+
+**9. Что такое chmod?**
+
+Команда изменения прав доступа к файлу или каталогу.
+
+**10. Как посмотреть смонтированные файловые системы?**
+
+```bash
+mount
+df -h
+cat /etc/fstab
+```
+
+# Список литературы
+
+1. Робачевский А., Немнюгин С., Стесик О. Операционная система UNIX. — БХВ-Петербург, 2010.
+2. Колисниченко Д. Н. Самоучитель системного администратора Linux. — БХВ-Петербург, 2011.
+3. Таненбаум Э., Бос Х. Современные операционные системы. — Питер, 2015.
