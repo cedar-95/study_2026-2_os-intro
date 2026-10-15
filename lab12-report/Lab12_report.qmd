@@ -1,0 +1,338 @@
+---
+title: "Лабораторная работа № 12. Программирование в командном процессоре ОС UNIX. Командные файлы"
+subtitle: "НПИбд-03-25"
+author: "Чжу Ино"
+date: today
+date-format: "YYYY-MM-DD"
+format:
+  pdf:
+    toc: true
+    toc-title: Содержание
+    lof: true
+    lof-title: Список иллюстраций
+    number-sections: true
+    fig-cap-location: bottom
+    fig-align: center
+    documentclass: article
+    fontsize: 12pt
+    linestretch: 1.2
+    geometry:
+      - top=2cm
+      - bottom=2cm
+      - left=2.5cm
+      - right=2.5cm
+    mainfont: "DejaVu Serif"
+    sansfont: "DejaVu Sans"
+    monofont: "DejaVu Sans Mono"
+    lang: ru
+    colorlinks: true
+  docx:
+    toc: true
+    toc-title: Содержание
+    number-sections: true
+  html:
+    toc: true
+    toc-title: Содержание
+    number-sections: true
+    embed-resources: true
+---
+
+# Цель работы
+
+Изучить основы программирования в оболочке ОС UNIX/Linux. Научиться писать небольшие командные файлы.
+
+# Задачи
+
+1. Написать скрипт, делающий резервную копию самого себя.
+2. Написать командный файл, обрабатывающий аргументы командной строки.
+3. Написать командный файл — аналог команды `ls`.
+4. Написать командный файл для подсчёта файлов с заданным расширением.
+
+# Теоретические сведения
+
+## Командные процессоры
+
+- `sh` — Bourne shell
+- `csh` — C shell
+- `ksh` — Korn shell
+- `bash` — Bourne Again Shell
+
+## Переменные
+
+```bash
+mark=/usr/andy/bin
+mv afile ${mark}
+```
+
+## Арифметические вычисления
+
+- `let` — арифметические выражения
+- Операторы: `+`, `-`, `*`, `/`, `%`, `==`, `!=`, `<`, `>`, `<=`, `>=`
+- `(( ))` — запись условий
+
+## Чтение ввода
+
+```bash
+read mon day trash
+```
+
+## Метасимволы
+
+- `*` — любая строка
+- `?` — один символ
+- `[c1-c2]` — диапазон
+
+Экранирование: `\`, `'`, `"`.
+
+## Командные файлы
+
+```bash
+bash командный_файл [аргументы]
+```
+
+## Условный оператор if
+
+```bash
+if список-команд
+then список-команд
+[elif список-команд
+then список-команд]
+[else список-команд]
+fi
+```
+
+## Циклы while и until
+
+```bash
+while список-команд
+do список-команд
+done
+```
+
+```bash
+until список-команд
+do список-команд
+done
+```
+
+## Прерывание циклов
+
+- `break` — завершить цикл
+- `continue` — завершить итерацию
+
+# Выполнение лабораторной работы
+
+## Скрипт 1: резервная копия
+
+```bash
+#!/bin/bash
+tar -czf ~/backup_$(date +%Y%m%d).tar.gz "$0"
+```
+
+![Скрипт backup](screenshots/Lab12_01_backup_script.png){#fig-backup width=80%}
+
+```bash
+chmod +x backup.sh
+./backup.sh
+```
+
+![Запуск backup](screenshots/Lab12_02_backup_run.png){#fig-backup-run width=80%}
+
+```bash
+ls -lh ~/backup_*.tar.gz
+```
+
+![Проверка backup](screenshots/Lab12_03_backup_check.png){#fig-backup-check width=80%}
+
+## Скрипт 2: аргументы
+
+```bash
+#!/bin/bash
+for arg in "$@"; do
+    if [ "$arg" -gt 10 ]; then
+        echo "$arg"
+    fi
+done
+```
+
+![Скрипт args](screenshots/Lab12_04_args_script.png){#fig-args width=80%}
+
+```bash
+chmod +x args.sh
+./args.sh 5 12 8 20 3 15
+```
+
+![Запуск args](screenshots/Lab12_05_args_run.png){#fig-args-run width=80%}
+
+```bash
+./args.sh
+```
+
+![Без аргументов](screenshots/Lab12_06_args_empty.png){#fig-args-empty width=80%}
+
+## Скрипт 3: аналог ls
+
+```bash
+#!/bin/bash
+DIR="${1:-.}"
+for file in "$DIR"/*; do
+    if [ -d "$file" ]; then
+        echo "d $file"
+    elif [ -f "$file" ]; then
+        echo "f $file"
+    fi
+done
+```
+
+![Скрипт myls](screenshots/Lab12_07_myls_script.png){#fig-myls width=80%}
+
+```bash
+chmod +x myls.sh
+./myls.sh
+```
+
+![Запуск myls](screenshots/Lab12_08_myls_run.png){#fig-myls-run width=80%}
+
+```bash
+./myls.sh /etc
+```
+
+![myls /etc](screenshots/Lab12_09_myls_dir.png){#fig-myls-dir width=80%}
+
+```bash
+ls
+```
+
+![Сравнение](screenshots/Lab12_10_myls_compare.png){#fig-myls-compare width=80%}
+
+## Скрипт 4: подсчёт файлов
+
+```bash
+#!/bin/bash
+DIR="${1:-.}"
+EXT="${2:-txt}"
+count=0
+for file in "$DIR"/*."$EXT"; do
+    if [ -f "$file" ]; then
+        count=$((count + 1))
+    fi
+done
+echo "Файлов .$EXT в $DIR: $count"
+```
+
+![Скрипт count](screenshots/Lab12_11_count_script.png){#fig-count width=80%}
+
+```bash
+chmod +x count.sh
+./count.sh ~ txt
+```
+
+![Запуск count](screenshots/Lab12_12_count_run.png){#fig-count-run width=80%}
+
+```bash
+./count.sh ~/work/os/lab06 sh
+```
+
+![count sh](screenshots/Lab12_13_count_sh.png){#fig-count-sh width=80%}
+
+```bash
+./count.sh /etc conf
+```
+
+![count conf](screenshots/Lab12_14_count_conf.png){#fig-count-conf width=80%}
+
+## Все скрипты
+
+```bash
+ls -la ~/work/os/lab06/
+```
+
+![Все скрипты](screenshots/Lab12_15_all_scripts.png){#fig-all width=80%}
+
+```bash
+./backup.sh && ./args.sh 5 12 20 && ./myls.sh && ./count.sh ~ txt
+```
+
+![Запуск всех](screenshots/Lab12_16_all_run.png){#fig-all-run width=80%}
+
+# Выводы
+
+В ходе работы изучены основы программирования в оболочке bash: переменные, арифметические вычисления, условные операторы, циклы, работа с аргументами. Написаны четыре командных файла: резервное копирование, обработка аргументов, аналог `ls`, подсчёт файлов.
+
+# Контрольные вопросы
+
+**1. Что такое командная оболочка?**
+
+Программа для взаимодействия пользователя с ОС. Примеры: sh, csh, ksh, bash.
+
+**2. Что такое POSIX?**
+
+Набор стандартов для совместимости UNIX-подобных ОС.
+
+**3. Как определяются переменные и массивы?**
+
+```bash
+var=value
+set -A arr val1 val2
+```
+
+**4. Назначение операторов let и read.**
+
+`let` — арифметика, `read` — чтение ввода.
+
+**5. Арифметические операции.**
+
+`+`, `-`, `*`, `/`, `%`, `==`, `!=`, `<`, `>`, `<=`, `>=`.
+
+**6. Что означает `(( ))`?**
+
+Арифметическое вычисление в bash.
+
+**7. Стандартные переменные.**
+
+`HOME`, `PATH`, `PS1`, `PS2`, `IFS`, `MAIL`, `TERM`, `LOGNAME`.
+
+**8. Что такое метасимволы?**
+
+`*`, `?`, `[...]`, `<`, `>`, `|`, `;`, `&`.
+
+**9. Экранирование метасимволов.**
+
+`\`, `'`, `"`.
+
+**10. Как создавать и запускать командные файлы?**
+
+Создать файл, `chmod +x`, запустить `./file.sh`.
+
+**11. Как определяются функции?**
+
+```bash
+function name {
+    commands
+}
+```
+
+**12. Файл или каталог?**
+
+```bash
+test -f file
+test -d dir
+```
+
+**13. set, typeset, unset.**
+
+`set` — установка параметров, `typeset` — объявление переменных, `unset` — удаление.
+
+**14. Передача параметров.**
+
+`$1`, `$2`, ..., `$@`, `$#`.
+
+**15. Специальные переменные bash.**
+
+`$?`, `$$`, `$!`, `$0`, `$#`, `$@`, `$*`.
+
+# Список литературы
+
+1. Курячий К. В. Операционная система UNIX. — М. : ИНТУИТ, 2016.
+2. Робачевский А., Немнюгин С., Стесик О. Операционная система UNIX. — БХВ-Петербург, 2010.
+3. Колисниченко Д. Н. Самоучитель системного администратора Linux. — БХВ-Петербург, 2011.
