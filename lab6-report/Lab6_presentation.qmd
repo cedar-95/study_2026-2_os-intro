@@ -1,0 +1,185 @@
+---
+## Author
+author:
+  name: Чжу Ино
+  affiliation:
+    - name: Российский университет дружбы народов
+      country: Российская Федерация
+      postal-code: 117198
+      city: Москва
+      address: ул. Миклухо-Маклая, д. 6
+## Title
+title: Лабораторная работа № 6
+subtitle:  Основы интерфейса взаимодействия с системой Unix
+date: today
+date-format: "YYYY-MM-DD"
+format:
+  beamer:
+    theme: "Madrid"
+    colortheme: "default"
+    lang: ru
+    toc: false
+    slide-level: 2
+    mainfont: "DejaVu Serif"
+    sansfont: "DejaVu Sans"
+    monofont: "DejaVu Sans Mono"
+  html:
+    embed-resources: true
+---
+
+# Информация
+
+## Докладчик
+
+::: {.columns align=center}
+::: {.column width="50%"}
+- Чжу Ино
+- группа НПИбд-03-25
+- Российский университет дружбы народов им. П. Лумумбы
+- Студенческий билет: 1132258331
+:::
+::: {.column width="50%"}
+:::
+:::
+
+# Вводная часть
+
+## Цель работы
+
+- Приобретение практических навыков взаимодействия с системой Unix посредством командной строки
+
+## Задачи
+
+- Определить домашний каталог
+- Работа с каталогами `/tmp`, `/var/spool`
+- Создать и удалить каталоги
+- Определить опции команд через `man`
+- Использовать `history`
+
+# Теоретические сведения
+
+## Формат команды
+
+```
+<имя_команды> <разделитель> <аргументы>
+```
+
+## Основные команды
+
+- `man` — справка
+- `cd` — смена каталога
+- `ls` — список файлов
+- `mkdir` — создание каталога
+- `rm` — удаление
+- `rmdir` — удаление каталога
+- `history` — история команд
+
+# Выполнение лабораторной работы
+
+## Домашний каталог
+
+```bash
+pwd
+```
+
+![pwd](screenshots/Lab6_01_pwd.png)
+
+## Каталог /tmp
+
+```bash
+cd /tmp
+ls
+```
+
+![ls /tmp](screenshots/Lab6_02_tmp_ls.png)
+
+## Опции ls
+
+```bash
+ls -a
+ls -F
+ls -l
+ls -alF
+```
+
+![Опции ls](screenshots/Lab6_03_ls_options.png)
+
+## /var/spool
+
+```bash
+ls /var/spool/
+ls /var/spool/cron
+```
+
+![var spool](screenshots/Lab6_04_var_spool.png)
+
+## Домашний каталог
+
+```bash
+cd ~
+ls -la
+```
+
+![Домашний каталог](screenshots/Lab6_05_home_ls.png)
+
+## Создание каталогов
+
+```bash
+mkdir ~/newdir
+mkdir ~/newdir/morefun
+mkdir letters memos misk
+```
+
+![Создание каталогов](screenshots/Lab6_06_mkdir_newdir.png)
+
+![Три каталога](screenshots/Lab6_07_mkdir_three.png)
+
+## Удаление каталогов
+
+```bash
+rmdir letters memos misk
+rm ~/newdir
+rmdir ~/newdir/morefun
+```
+
+![Удаление](screenshots/Lab6_08_rmdir_three.png)
+
+![rm newdir](screenshots/Lab6_09_rm_newdir.png)
+
+## man
+
+```bash
+man ls
+man cd
+man pwd
+man mkdir
+man rmdir
+man rm
+```
+
+![man ls](screenshots/Lab6_11_man_ls_R.png)
+
+## history
+
+```bash
+history
+!5
+!3:s/a/F
+```
+
+![history](screenshots/Lab6_15_history.png)
+
+# Результаты
+
+## Результаты работы
+
+- Определён домашний каталог
+- Изучены команды `man`, `cd`, `ls`, `mkdir`, `rm`, `rmdir`
+- Освоены опции команд
+- Изучена работа с `history`
+
+# Заключение
+
+## Главный вывод
+
+Приобретены практические навыки взаимодействия с системой Unix на уровне командной строки.
