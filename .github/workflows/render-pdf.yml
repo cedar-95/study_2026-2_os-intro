@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
@@ -26,7 +26,7 @@ jobs:
           quarto render 20261031T120500--lab09-presentation__selinux.qmd --to beamer
 
       - name: Upload PDF as Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: lab09-presentation-pdf
           path: labs/lab09/presentation/20261031T120500--lab09-presentation__selinux.pdf
