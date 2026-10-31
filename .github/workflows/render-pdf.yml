@@ -1,0 +1,33 @@
+name: Render Presentation PDF
+
+on:
+  push:
+    branches:
+      - master
+      - main
+    paths:
+      - 'labs/lab09/presentation/20261031T120500--lab09-presentation__selinux.qmd'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Set up Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+        with:
+          tinytex: true
+
+      - name: Render Presentation to PDF
+        run: |
+          cd labs/lab09/presentation/
+          quarto render 20261031T120500--lab09-presentation__selinux.qmd --to beamer
+
+      - name: Upload PDF as Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: lab09-presentation-pdf
+          path: labs/lab09/presentation/20261031T120500--lab09-presentation__selinux.pdf
+
