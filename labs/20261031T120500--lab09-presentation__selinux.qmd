@@ -19,8 +19,8 @@ format:
     theme: "Madrid"
     colortheme: "default"
     pdf-engine: xelatex
-    mainfont: "Times New Roman"
-    monofont: "Courier New"
+    mainfont: "Noto Sans"
+    monofont: "DejaVu Sans Mono"
     lang: ru
     aspectratio: 169
     include-in-header:
@@ -42,7 +42,7 @@ format:
         % Set the section progress bar to yellow
         \setbeamercolor{section in head/foot}{bg=myyellow, fg=black}
         
-        % Add Logo (make sure logo_rudn.png is in the same folder)
+        % Add Logo
         \logo{\includegraphics[width=0.8cm]{logo_rudn.png}}
         
         % Custom Headline Template to ensure the yellow progress bar appears across the top
@@ -69,100 +69,138 @@ format:
 
 ## Актуальность
 
-- SELinux (Security-Enhanced Linux) — механизм принудительного контроля доступа
-- Обеспечивает защиту от несанкционированного доступа на уровне ядра
-- Важен для безопасной работы серверов и критических систем
+- SELinux реализует мандатное управление доступом (MAC) в ядре Linux.
+- Работает поверх стандартного дискреционного управления доступом (DAC).
+- Обеспечивает защиту даже при компрометации приложений.
+- Понимание контекстов безопасности необходимо для настройки веб-служб.
+
+## Объект и предмет исследования
+
+- Объект: подсистема безопасности SELinux в ОС Linux.
+- Предмет: управление режимами, контекстами безопасности и переключателями SELinux.
 
 ## Цели и задачи
 
 - Цель:
-    - Изучить основы управления SELinux в операционной системе Linux.
+    - Получить навыки работы с контекстом безопасности и политиками SELinux.
 - Задачи:
-    - Ознакомиться с режимами работы SELinux.
-    - Научиться переключать режимы и управлять политиками.
-    - Изучить утилиты для работы с SELinux.
+    - Продемонстрировать навыки по управлению режимами SELinux.
+    - Продемонстрировать навыки по восстановлению контекста (`restorecon`).
+    - Настроить контекст для нестандартного расположения файлов веб-службы.
+    - Продемонстрировать навыки работы с переключателями SELinux.
 
 ## Материалы и методы
 
 - Операционная система: Fedora Linux
 - Командная строка `bash`
-- Утилиты: `getenforce`, `setenforce`, `sestatus`, `semanage`
+- Утилиты: `sestatus`, `getenforce`, `setenforce`, `restorecon`, `semanage`, `setsebool`
+- Веб-сервисы: Apache (`httpd`), `lynx`
 
 # Теоретические сведения
 
 ## Режимы работы SELinux
 
-- **Enforcing** — принудительный режим, все нарушения блокируются и логируются
-- **Permissive** — предупреждающий режим, нарушения только логируются
-- **Disabled** — отключен, контроль доступа не работает
+- **Enforcing**: действия, нарушающие политику, блокируются и фиксируются в журнале.
+- **Permissive**: действия не блокируются, но попытки нарушения фиксируются в журнале.
+- **Disabled**: полное отключение SELinux.
+- Переключение режимов осуществляется командой `setenforce`.
 
-## Основные команды
+## Контексты безопасности
 
-~~~bash
-getenforce
-setenforce 0
-sestatus
-~~~
-
-- `getenforce` — показывает текущий режим
-- `setenforce` — изменяет режим (1 — Enforcing, 0 — Permissive)
-- `sestatus` — выводит полную информацию о SELinux
+- Контекст — это метка SELinux: `user_u:role_r:type_t:level`.
+- Пример: `system_u:object_r:httpd_sys_content_t:s0`.
+- Для управления используется `semanage fcontext` и `restorecon`.
 
 # Выполнение лабораторной работы
 
-## Проверка статуса SELinux
+## Управление режимами SELinux
 
-- Просмотр текущего статуса:
-
-~~~bash
-sestatus
-~~~
-
-## Переключение режимов
-
-- Переключение в Permissive:
+- Проверка статуса и переключение в `Permissive`:
 
 ~~~bash
-sudo setenforce 0
+su -
+sestatus -v
 getenforce
+setenforce 0
 ~~~
 
-- Переключение обратно в Enforcing:
+- Отключение SELinux в `/etc/sysconfig/selinux`:
 
-~~~bash
-sudo setenforce 1
-getenforce
+~~~text
+SELINUX=disabled
 ~~~
 
-## Управление контекстами
+## Восстановление контекста (restorecon)
 
-- Просмотр контекста файлов:
+- Просмотр контекста файла `/etc/hosts`:
 
 ~~~bash
-ls -Z
+ls -Z /etc/hosts
 ~~~
 
-- Изменение контекста:
+- Копирование в домашний каталог меняет контекст:
 
 ~~~bash
-sudo chcon -t httpd_sys_content_t /var/www/html
+cp /etc/hosts ~/
+ls -Z ~/hosts
+~~~
+
+- Восстановление контекста:
+
+~~~bash
+restorecon -v /etc/hosts
+~~~
+
+## Контекст для нестандартного веб-сервера
+
+- Установка и настройка `httpd`:
+
+~~~bash
+dnf -y install httpd lynx
+mkdir /web
+echo "Welcome to my web-server" > /web/index.html
+systemctl start httpd
+~~~
+
+- Настройка контекста для директории `/web`:
+
+~~~bash
+semanage fcontext -a -t httpd_sys_content_t "/web(/.*)?"
+restorecon -R -v /web
+~~~
+
+- Проверка через `lynx`:
+
+~~~bash
+lynx http://localhost
+~~~
+
+## Работа с переключателями SELinux
+
+- Просмотр переключателей FTP:
+
+~~~bash
+getsebool -a | grep ftp
+~~~
+
+- Временное и постоянное включение:
+
+~~~bash
+setsebool ftpd_anon_write on
+setsebool -P ftpd_anon_write on
 ~~~
 
 # Результаты
 
 ## Результаты работы
 
-- Изучены режимы работы SELinux (Enforcing, Permissive, Disabled)
-- Освоены команды просмотра и переключения статуса (`sestatus`, `getenforce`, `setenforce`)
-- Научились изменять контексты файлов и каталогов
+- Изучены режимы работы SELinux (`Enforcing`, `Permissive`, `Disabled`).
+- Освоено восстановление контекста с помощью `restorecon`.
+- Настроен контекст `httpd_sys_content_t` для нестандартного каталога `/web`.
+- Изучены временные и постоянные изменения переключателей SELinux.
 
 # Заключение
 
 ## Главный вывод
 
-В ходе работы изучен механизм SELinux. Освоены методы управления режимами безопасности и контекстами файлов, что позволяет повысить уровень безопасности операционной системы Linux.
-
-# Список литературы
-
-1. Таненбаум Э., Бос Х. Современные операционные системы. — Питер, 2015.
-2. Колисниченко Д. Н. Самоучитель системного администратора Linux. — БХВ-Петербург, 2011.
+В ходе работы были получены практические навыки администрирования подсистемы безопасности SELinux. Настройка контекстов позволяет безопасно предоставлять доступ службам к нестандартным файлам, не отключая при этом общую защиту системы.
