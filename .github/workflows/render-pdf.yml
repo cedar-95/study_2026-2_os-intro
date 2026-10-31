@@ -4,9 +4,9 @@ on:
   push:
     branches:
       - master
-      - main
     paths:
       - 'labs/lab09/presentation/20261031T120500--lab09-presentation__selinux.qmd'
+  workflow_dispatch:
 
 jobs:
   build:
@@ -30,5 +30,3 @@ jobs:
         with:
           name: lab09-presentation-pdf
           path: labs/lab09/presentation/20261031T120500--lab09-presentation__selinux.pdf
-
-# force trigger
