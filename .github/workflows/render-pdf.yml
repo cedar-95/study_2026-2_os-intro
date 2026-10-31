@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - master
-    paths:
-      - 'labs/lab09/presentation/20261031T120500--lab09-presentation__selinux.qmd'
   workflow_dispatch:
 
 jobs:
@@ -29,4 +27,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: lab09-presentation-pdf
-          path: labs/lab09/presentation/20261031T120500--lab09-presentation__selinux.pdf
+          path: "**/*.pdf"
