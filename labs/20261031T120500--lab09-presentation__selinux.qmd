@@ -1,0 +1,168 @@
+---
+## Author
+author:
+  name: Чжу Ино
+  email: 1132258331@rudn.ru
+  affiliation:
+    - name: Российский университет дружбы народов
+      country: Российская Федерация
+      postal-code: 117198
+      city: Москва
+      address: ул. Миклухо-Маклая, д. 6
+## Title
+title: Лабораторная работа № 9
+subtitle:  Управление SELinux
+date: today
+date-format: "YYYY-MM-DD"
+format:
+  beamer:
+    theme: "Madrid"
+    colortheme: "default"
+    pdf-engine: xelatex
+    mainfont: "Times New Roman"
+    monofont: "Courier New"
+    lang: ru
+    aspectratio: 169
+    include-in-header:
+      text: |
+        \usepackage{xcolor}
+        \usepackage{graphicx}
+        
+        % Colors matching the screenshot
+        \definecolor{darkbluegrey}{RGB}{44, 62, 80}
+        \definecolor{myyellow}{RGB}{255, 215, 0}
+        
+        % Set colors
+        \setbeamercolor{palette primary}{bg=darkbluegrey, fg=white}
+        \setbeamercolor{palette secondary}{bg=darkbluegrey, fg=white}
+        \setbeamercolor{palette tertiary}{bg=darkbluegrey, fg=white}
+        \setbeamercolor{frametitle}{bg=darkbluegrey, fg=white}
+        \setbeamercolor{title}{bg=darkbluegrey, fg=white}
+        
+        % Set the section progress bar to yellow
+        \setbeamercolor{section in head/foot}{bg=myyellow, fg=black}
+        
+        % Add Logo (make sure logo_rudn.png is in the same folder)
+        \logo{\includegraphics[width=0.8cm]{logo_rudn.png}}
+        
+        % Custom Headline Template to ensure the yellow progress bar appears across the top
+        \setbeamertemplate{headline}{
+          \leavevmode
+          \hbox{
+            \begin{beamercolorbox}[wd=\paperwidth,ht=2.8ex,dp=1.125ex]{palette primary}
+              \insertsectionnavigationhorizontal{\paperwidth}{}{}
+            \end{beamercolorbox}
+          }
+        }
+---
+
+# Информация
+
+## Докладчик
+
+- Чжу Ино
+- группа НПИбд-03-25
+- Российский университет дружбы народов им. П. Лумумбы
+- Студенческий билет: 1132258331
+
+# Вводная часть
+
+## Актуальность
+
+- SELinux (Security-Enhanced Linux) — механизм принудительного контроля доступа
+- Обеспечивает защиту от несанкционированного доступа на уровне ядра
+- Важен для безопасной работы серверов и критических систем
+
+## Цели и задачи
+
+- Цель:
+    - Изучить основы управления SELinux в операционной системе Linux.
+- Задачи:
+    - Ознакомиться с режимами работы SELinux.
+    - Научиться переключать режимы и управлять политиками.
+    - Изучить утилиты для работы с SELinux.
+
+## Материалы и методы
+
+- Операционная система: Fedora Linux
+- Командная строка `bash`
+- Утилиты: `getenforce`, `setenforce`, `sestatus`, `semanage`
+
+# Теоретические сведения
+
+## Режимы работы SELinux
+
+- **Enforcing** — принудительный режим, все нарушения блокируются и логируются
+- **Permissive** — предупреждающий режим, нарушения только логируются
+- **Disabled** — отключен, контроль доступа не работает
+
+## Основные команды
+
+~~~bash
+getenforce
+setenforce 0
+sestatus
+~~~
+
+- `getenforce` — показывает текущий режим
+- `setenforce` — изменяет режим (1 — Enforcing, 0 — Permissive)
+- `sestatus` — выводит полную информацию о SELinux
+
+# Выполнение лабораторной работы
+
+## Проверка статуса SELinux
+
+- Просмотр текущего статуса:
+
+~~~bash
+sestatus
+~~~
+
+## Переключение режимов
+
+- Переключение в Permissive:
+
+~~~bash
+sudo setenforce 0
+getenforce
+~~~
+
+- Переключение обратно в Enforcing:
+
+~~~bash
+sudo setenforce 1
+getenforce
+~~~
+
+## Управление контекстами
+
+- Просмотр контекста файлов:
+
+~~~bash
+ls -Z
+~~~
+
+- Изменение контекста:
+
+~~~bash
+sudo chcon -t httpd_sys_content_t /var/www/html
+~~~
+
+# Результаты
+
+## Результаты работы
+
+- Изучены режимы работы SELinux (Enforcing, Permissive, Disabled)
+- Освоены команды просмотра и переключения статуса (`sestatus`, `getenforce`, `setenforce`)
+- Научились изменять контексты файлов и каталогов
+
+# Заключение
+
+## Главный вывод
+
+В ходе работы изучен механизм SELinux. Освоены методы управления режимами безопасности и контекстами файлов, что позволяет повысить уровень безопасности операционной системы Linux.
+
+# Список литературы
+
+1. Таненбаум Э., Бос Х. Современные операционные системы. — Питер, 2015.
+2. Колисниченко Д. Н. Самоучитель системного администратора Linux. — БХВ-Петербург, 2011.
