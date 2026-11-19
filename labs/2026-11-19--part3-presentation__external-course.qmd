@@ -1,0 +1,279 @@
+---
+author:
+  name: Чжу Ино
+  email: 1132258331@rudn.ru
+  affiliation:
+    - name: Российский университет дружбы народов
+      country: Российская Федерация
+      city: Москва
+      address: ул. Миклухо-Маклая, д. 6
+title: "Внешний курс Selectel. Часть 3"
+subtitle: "Сетевое администрирование, логи и контейнеры"
+date: today
+date-format: "YYYY-MM-DD"
+format:
+  beamer:
+    theme: "Madrid"
+    colortheme: "default"
+    pdf-engine: xelatex
+    mainfont: "DejaVu Sans"
+    monofont: "DejaVu Sans Mono"
+    lang: ru
+    aspectratio: 169
+    include-in-header:
+      text: |
+        \usepackage{xcolor}
+        \usepackage{graphicx}
+        
+        \definecolor{darkbluegrey}{RGB}{44, 62, 80}
+        \definecolor{myyellow}{RGB}{255, 215, 0}
+        
+        \setbeamercolor{palette primary}{bg=darkbluegrey, fg=white}
+        \setbeamercolor{palette secondary}{bg=darkbluegrey, fg=white}
+        \setbeamercolor{palette tertiary}{bg=darkbluegrey, fg=white}
+        \setbeamercolor{frametitle}{bg=darkbluegrey, fg=white}
+        \setbeamercolor{title}{bg=darkbluegrey, fg=white}
+        
+        \setbeamercolor{section in head/foot}{bg=myyellow, fg=black}
+        
+        \logo{\includegraphics[width=0.8cm]{logo_rudn.png}}
+        
+        \setbeamertemplate{headline}{
+          \leavevmode
+          \hbox{
+            \begin{beamercolorbox}[wd=\paperwidth,ht=2.8ex,dp=1.125ex]{palette primary}
+              \insertsectionnavigationhorizontal{\paperwidth}{}{}
+            \end{beamercolorbox}
+          }
+        }
+---
+
+# Информация
+
+## Докладчик
+:::::::::::::: {.columns align=center}
+::: {.column width="70%"}
+- Чжу Ино
+- группа НПИбд-03-25
+- Российский университет дружбы народов им. П. Лумумбы
+- Студенческий билет: 1132258331
+:::
+::: {.column width="30%"}
+![](author.jpg)
+:::
+::::::::::::::
+
+## Цель работы
+Освоение навыков сетевой диагностики, настройки SSH, управления логированием, а также работы с контейнерами (Podman).
+
+# Модуль 8. Диагностика сети и SSH
+
+## Тест 8.1 (IP-адрес) {.allowframebreaks}
+**Вопрос:** Какой командой можно назначить IP-адрес вручную?
+**Ответ:** `ip a add 192.168.122.2/24 dev eth0`.
+**Объяснение:** Команда `ip a add` добавляет IP-адрес интерфейсу.
+![Ответ](screenshots3/Part8_Test1_Passed.png){width=80%}
+
+## Тест 8.2 (Удаление IP) {.allowframebreaks}
+**Вопрос:** Какая команда удаляет IP с интерфейса?
+**Ответ:** `ip del addr ...`.
+**Объяснение:** Подкоманда `del` удаляет указанный IP.
+![Ответ](screenshots3/Part8_Test2_Passed.png){width=80%}
+
+## Тест 8.3 (После перезагрузки) {.allowframebreaks}
+**Вопрос:** Что произойдет при перезагрузке, если IP задан через `ip`?
+**Ответ:** IP-адрес исчезнет.
+**Объяснение:** Команды `ip` меняют только оперативную память.
+![Ответ](screenshots3/Part8_Test3_Passed.png){width=80%}
+
+## Тест 8.4 (Шлюз) {.allowframebreaks}
+**Вопрос:** Где задается шлюз по умолчанию?
+**Ответ:** В поле `gateway` в `/etc/network/interfaces`.
+![Ответ](screenshots3/Part8_Test4_Passed.png){width=80%}
+
+## Тест 8.5 (Открытые порты) {.allowframebreaks}
+**Вопрос:** Какая команда показывает открытые TCP-порты и процессы?
+**Ответ:** `ss -tulpn`.
+![Ответ](screenshots3/Part8_Test5_Passed.png){width=80%}
+
+## Тест 8.6 (Флаг -p) {.allowframebreaks}
+**Вопрос:** Какой флаг в `ss` включает отображение портов и PID?
+**Ответ:** `-p`.
+![Ответ](screenshots3/Part8_Test6_Passed.png){width=80%}
+
+## Тест 8.7 (dig) {.allowframebreaks}
+**Вопрос:** Что делает `dig`?
+**Ответ:** Выполняет DNS-запрос и отображает IP.
+![Ответ](screenshots3/Part8_Test7_Passed.png){width=80%}
+
+## Тест 8.8 (Проверка TCP) {.allowframebreaks}
+**Вопрос:** Проверка TCP-порта без передачи данных?
+**Ответ:** `nc -vz`.
+![Ответ](screenshots3/Part8_Test8_Passed.png){width=80%}
+
+## Тест 8.9 (Справка) {.allowframebreaks}
+**Вопрос:** Поиск информации по параметру?
+**Ответ:** `man`.
+![Ответ](screenshots3/Part8_Test9_Answer.png){width=80%}
+
+## Тест 8.10 (Маршруты) {.allowframebreaks}
+**Вопрос:** Таблица маршрутизации?
+**Ответ:** `ip route`.
+![Ответ](screenshots3/Part8_Test10_Passed.png){width=80%}
+
+## Тест 8.11 (MAC-адрес) {.allowframebreaks}
+**Вопрос:** Изменение MAC-адреса?
+**Ответ:** `ip link set dev eth0 address ...`.
+![Ответ](screenshots3/Part8_Test11_Passed.png){width=80%}
+
+## Тест 8.12 (Проверка сети) {.allowframebreaks}
+**Вопрос:** Утилита для проверки соединения?
+**Ответ:** `ping`.
+![Ответ](screenshots3/Part8_Test12_Passed.png){width=80%}
+
+## Тест 8.13 (Статус) {.allowframebreaks}
+**Вопрос:** Статус интерфейса?
+**Ответ:** `ip link`.
+![Ответ](screenshots3/Part8_Test13_Passed.png){width=80%}
+
+## Тест 8.14 (DNS) {.allowframebreaks}
+**Вопрос:** Где настраивается DNS?
+**Ответ:** `/etc/resolv.conf`.
+![Ответ](screenshots3/Part8_Test14_Passed.png){width=80%}
+
+## Тест 8.15 (IPv6) {.allowframebreaks}
+**Вопрос:** Какой адрес IPv6?
+**Ответ:** `::1`.
+![Ответ](screenshots3/Part8_Test15_Answer.png){width=80%}
+
+## Практика Модуля 8 {.allowframebreaks}
+**Описание:** Настройка IP, проверка интерфейсов, ping, работа с Nginx и портами, настройка SSH и UFW.
+![static ip](screenshots3/Part8_Task1_static_ip_manual.png){width=90%}
+![interfaces](screenshots3/Part8_Task2_interfaces_eth0_config.png){width=90%}
+![ping](screenshots3/Part8_Task3_ping_external.png){width=90%}
+![delete ip](screenshots3/Part8_Task4_delete_ip_address.png){width=90%}
+![port 80](screenshots3/Part8_Task5_web_server_port80.png){width=90%}
+![dig](screenshots3/Part8_Task6_dig_ip_lookup.png){width=90%}
+![ssh port](screenshots3/Part8_Task7_check_ssh_port.png){width=90%}
+![change port](screenshots3/Part8_Task8_change_ssh_port.png){width=90%}
+![ssh key](screenshots3/Part8_Task9_ssh_key_auth.png){width=90%}
+![allow users](screenshots3/Part8_Task10_ssh_allow_users.png){width=90%}
+![ufw ssh](screenshots3/Part8_Task11_ufw_ssh_only.png){width=90%}
+![ufw local](screenshots3/Part8_Task12_ufw_ssh_local_network.png){width=90%}
+![jail](screenshots3/Part8_Task13_fail2ban_nginx_jail.png){width=90%}
+![block verify](screenshots3/Part8_Task14_fail2ban_block_verify.png){width=90%}
+
+# Модуль 9. Управление пакетами
+
+## Тесты Модуля 9 {.allowframebreaks}
+**Описание:** Базовые команды, поиск, обновление и очистка пакетов.
+![Ответ 1](screenshots3/Part9_Test1_Passed.png){width=80%}
+![Ответ 2](screenshots3/Part9_Test2_Passed.png){width=80%}
+![Ответ 3](screenshots3/Part9_Test3_Passed.png){width=80%}
+![Ответ 4](screenshots3/Part9_Test4_Passed.png){width=80%}
+![Ответ 5](screenshots3/Part9_Test5_Passed.png){width=80%}
+![Ответ 6](screenshots3/Part9_Test6_Answer.png){width=80%}
+![Ответ 7](screenshots3/Part9_Test7_Passed.png){width=80%}
+![Ответ 8](screenshots3/Part9_Test8_Answer.png){width=80%}
+
+## Практика Модуля 9 {.allowframebreaks}
+**Описание:** Установка, удаление, автообновления и ручная установка RPM.
+![install htop](screenshots3/Part9_Task1_find_install_htop.png){width=90%}
+![update](screenshots3/Part9_Task3_full_system_update.png){width=90%}
+![auto sec](screenshots3/Part9_Task4_auto_security_updates.png){width=90%}
+![manual rpm](screenshots3/Part9_Task6_manual_rpm_install.png){width=90%}
+![analyze dep](screenshots3/Part9_Task7_analyze_dependencies.png){width=90%}
+
+# Модуль 10. Логирование
+
+## Тесты Модуля 10 {.allowframebreaks}
+**Описание:** Просмотр логов, удаление пакетов, обновления и конфигурация Fail2ban.
+![Ответ 1](screenshots3/Part10_Test1_Passed.png){width=80%}
+![Ответ 2](screenshots3/Part10_Test3_Answer.png){width=80%}
+![Ответ 3](screenshots3/Part10_Test4_Answer.png){width=80%}
+![Ответ 4](screenshots3/Part10_Test5_Passed.png){width=80%}
+![Ответ 5](screenshots3/Part10_Test6_Passed.png){width=80%}
+
+## Практика Модуля 10 (Часть 1) {.allowframebreaks}
+**Описание:** Работа с `journalctl`, `logger`, `rsyslog`.
+![view pager](screenshots3/Part10_Task1_view_logs_pager.png){width=90%}
+![last 20](screenshots3/Part10_Task2_journalctl_last_20.png){width=90%}
+![nginx error](screenshots3/Part10_Task3_nginx_error_log_location.png){width=90%}
+![manual auth](screenshots3/Part10_Task4_manual_auth_log_analysis.png){width=90%}
+![filter cron](screenshots3/Part10_Task5_journalctl_filter_cron.png){width=90%}
+![check services](screenshots3/Part10_Task6_check_log_services.png){width=90%}
+![logger](screenshots3/Part10_Task7_logger_test.png){width=90%}
+![error level](screenshots3/Part10_Task8_journalctl_error_level.png){width=90%}
+![auth rsyslog](screenshots3/Part10_Task9_find_auth_rsyslog_config.png){width=90%}
+![warning log](screenshots3/Part10_Task10_send_warning_log.png){width=90%}
+
+## Практика Модуля 10 (Часть 2) {.allowframebreaks}
+**Описание:** Расследование инцидентов (IP, поиск ошибок, аудит) и ротация логов.
+![failed pass](screenshots3/Part10_Task11_find_failed_password.png){width=90%}
+![extract ips](screenshots3/Part10_Task12_extract_success_ips.png){width=90%}
+![unique ips](screenshots3/Part10_Task13_unique_failed_ips.png){width=90%}
+![top 5](screenshots3/Part10_Task14_top5_success_ips.png){width=90%}
+![15 min](screenshots3/Part10_Task15_journalctl_last_15_min.png){width=90%}
+![invalid user](screenshots3/Part10_Task16_invalid_user_attempts.png){width=90%}
+![most failed](screenshots3/Part10_Task17_most_failed_ip.png){width=90%}
+![incident report](screenshots3/Part10_Task18_save_incident_report.png){width=90%}
+![sha256](screenshots3/Part10_Task19_sha256_incident_report.png){width=90%}
+![sudo history](screenshots3/Part10_Task20_check_sudo_history.png){width=90%}
+![study logrotate](screenshots3/Part10_Task21_study_logrotate_config.png){width=90%}
+![create testapp](screenshots3/Part10_Task22_create_testapp_logrotate.png){width=90%}
+![dry run](screenshots3/Part10_Task23_logrotate_dry_run.png){width=90%}
+![force verify](screenshots3/Part10_Task24_force_rotation_verify.png){width=90%}
+![remote forward](screenshots3/Part10_Task25_rsyslog_remote_forward.png){width=90%}
+
+# Модуль 11. Контейнеризация
+
+## Тесты Модуля 11 {.allowframebreaks}
+**Описание:** Флаги, порты, безопасность и особенности Podman.
+![Ответ 1](screenshots3/Part11_Test1_Answer.png){width=80%}
+![Ответ 2](screenshots3/Part11_Test1_Passed.png){width=80%}
+![Ответ 3](screenshots3/Part11_Test2_Passed.png){width=80%}
+![Ответ 4](screenshots3/Part11_Test3_Passed.png){width=80%}
+![Ответ 5](screenshots3/Part11_Test4_Passed.png){width=80%}
+![Ответ 6](screenshots3/Part11_Test5_Passed.png){width=80%}
+![Ответ 7](screenshots3/Part11_Test6_Passed.png){width=80%}
+![Ответ 8](screenshots3/Part11_Test7_Passed.png){width=80%}
+![Ответ 9](screenshots3/Part11_Test8_Passed.png){width=80%}
+![Ответ 10](screenshots3/Part11_Test9_Passed.png){width=80%}
+![Ответ 11](screenshots3/Part11_Test10_Answer.png){width=80%}
+![Ответ 12](screenshots3/Part11_Test11_Passed.png){width=80%}
+![Ответ 13](screenshots3/Part11_Test12_Passed.png){width=80%}
+![Ответ 14](screenshots3/Part11_Test13_Passed.png){width=80%}
+
+## Практика Модуля 11 {.allowframebreaks}
+**Описание:** Запуск контейнеров, монтирование, ограничение памяти и создание образов.
+![install podman](screenshots3/Part11_Task1_install_podman.png){width=90%}
+![run container](screenshots3/Part11_Task2_run_container.png){width=90%}
+![run nginx](screenshots3/Part11_Task3_run_nginx_container.png){width=90%}
+![mount html](screenshots3/Part11_Task4_mount_html_folder.png){width=90%}
+![100mb limit](screenshots3/Part11_Task5_nginx_100mb_limit.png){width=90%}
+![oom behavior](screenshots3/Part11_Task6_oom_behavior.png){width=90%}
+![build custom](screenshots3/Part11_Task7_build_custom_nginx.png){width=90%}
+![save load](screenshots3/Part11_Task8_save_and_load_image.png){width=90%}
+
+# Итоги
+
+## Подтверждение прохождения {.allowframebreaks}
+**Описание:** Успешное прохождение всех тестов.
+![Тема 1](screenshots3/Grade_Part3_1.png){width=90%}
+![Тема 2](screenshots3/Grade_Part3_2.png){width=90%}
+![Тема 3](screenshots3/Grade_Part3_3.png){width=90%}
+![Тема 4](screenshots3/Grade_Part3_4.png){width=90%}
+![Тема 5](screenshots3/Grade_Part3_5.png){width=90%}
+![Тема 6](screenshots3/Grade_Part3_6.png){width=90%}
+![Тема 7](screenshots3/Grade_Part3_7.png){width=90%}
+![Тема 8](screenshots3/Grade_Part3_8.png){width=90%}
+![Тема 9](screenshots3/Grade_Part3_9.png){width=90%}
+![Тема 10](screenshots3/Grade_Part3_10.png){width=90%}
+![Тема 11](screenshots3/Grade_Part3_11.png){width=90%}
+![Тема 12](screenshots3/Grade_Part3_12.png){width=90%}
+![Тема 13](screenshots3/Grade_Part3_13.png){width=90%}
+![Тема 14](screenshots3/Grade_Part3_14.png){width=90%}
+![Тема 15](screenshots3/Grade_Part3_15.png){width=90%}
+![Тема 16](screenshots3/Grade_Part3_16.png){width=90%}
+
+# Спасибо за внимание!

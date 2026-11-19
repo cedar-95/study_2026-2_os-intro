@@ -1,0 +1,297 @@
+---
+author:
+  name: Чжу Ино
+  email: 1132258331@rudn.ru
+  affiliation:
+    - name: Российский университет дружбы народов
+      country: Российская Федерация
+      postal-code: 117198
+      city: Москва
+      address: ул. Миклухо-Маклая, д. 6
+title: "Внешний курс Selectel. Часть 1"
+subtitle: "Системное администрирование и основы Linux"
+date: today
+date-format: "YYYY-MM-DD"
+format:
+  beamer:
+    theme: "Madrid"
+    colortheme: "default"
+    pdf-engine: xelatex
+    mainfont: "DejaVu Sans"
+    monofont: "DejaVu Sans Mono"
+    lang: ru
+    aspectratio: 169
+    include-in-header:
+      text: |
+        \usepackage{xcolor}
+        \usepackage{graphicx}
+        
+        \definecolor{darkbluegrey}{RGB}{44, 62, 80}
+        \definecolor{myyellow}{RGB}{255, 215, 0}
+        
+        \setbeamercolor{palette primary}{bg=darkbluegrey, fg=white}
+        \setbeamercolor{palette secondary}{bg=darkbluegrey, fg=white}
+        \setbeamercolor{palette tertiary}{bg=darkbluegrey, fg=white}
+        \setbeamercolor{frametitle}{bg=darkbluegrey, fg=white}
+        \setbeamercolor{title}{bg=darkbluegrey, fg=white}
+        
+        \setbeamercolor{section in head/foot}{bg=myyellow, fg=black}
+        
+        \logo{\includegraphics[width=0.8cm]{logo_rudn.png}}
+        
+        \setbeamertemplate{headline}{
+          \leavevmode
+          \hbox{
+            \begin{beamercolorbox}[wd=\paperwidth,ht=2.8ex,dp=1.125ex]{palette primary}
+              \insertsectionnavigationhorizontal{\paperwidth}{}{}
+            \end{beamercolorbox}
+          }
+        }
+---
+
+# Информация
+
+## Докладчик
+
+:::::::::::::: {.columns align=center}
+::: {.column width="70%"}
+
+- Чжу Ино
+- группа НПИбд-03-25
+- Российский университет дружбы народов им. П. Лумумбы
+- Студенческий билет: 1132258331
+
+:::
+::: {.column width="30%"}
+
+![](author.jpg)
+
+:::
+::::::::::::::
+
+## Цель работы
+
+Освоение базовых команд Linux, понимание структуры файловой системы, получение навыков работы с процессами, правами доступа, текстовыми редакторами и архивацией.
+
+**Задачи:**
+1. Выполнить теоретические тесты по модулям 1, 2 и 3.
+2. Выполнить интерактивные практические задания в терминале.
+
+# Модуль 1. Введение
+
+## 1.1.1. Инструмент для мониторинга
+
+**Вопрос:** Какой инструмент можно использовать для мониторинга сервисов?
+**Ответ:** Zabbix.
+**Объяснение:** Zabbix — это специализированная система мониторинга сервисов. Остальные варианты не подходят.
+
+:::::::::::::: {.columns}
+::: {.column width="33%"}
+![Вопрос 1](screenshots1/Part1_Test1_Question.png)
+:::
+::: {.column width="33%"}
+![Ответ 1](screenshots1/Part1_Test2_Answer.png)
+:::
+::: {.column width="33%"}
+![Тест пройден 1](screenshots1/Part1_Test3_Passed.png)
+:::
+::::::::::::::
+
+## 1.1.2. Философия свободного ПО
+
+**Вопрос:** Что из перечисленного относится к философии свободного ПО?
+**Ответ:** Возможность модификации программы под свои задачи без нарушения авторских прав.
+**Объяснение:** Свободное ПО (Free Software) подразумевает свободу изменения и распространения.
+
+![Ответ 2](screenshots1/Part2_Test_Late_Answer.png){width=70%}
+
+## 1.1.3. Команда awk
+
+**Вопрос:** Что означает конструкция `$3` в команде `awk '{print $3}'`?
+**Ответ:** Вывести третье поле (столбец) каждой строки.
+**Объяснение:** В `awk` по умолчанию разделителем являются пробелы, `$3` означает третий столбец.
+
+![Ответ 3](screenshots1/Part2_Test3_Answer.png){width=70%}
+
+# Модуль 1. Практика
+
+## 1.2.1. Установка htop
+
+**Описание:** Установил утилиту `htop` с помощью `sudo dnf install htop -y`. Запустил `htop` и с помощью клавиши F6 отсортировал процессы по использованию оперативной памяти (PERCENT_MEM).
+
+:::::::::::::: {.columns}
+::: {.column width="50%"}
+![Установка htop](screenshots1/Part2_Task1_htop_install.pngpng.png)
+:::
+::: {.column width="50%"}
+![Запуск htop](screenshots1/Part2_Task2_htop_run.png)
+:::
+::::::::::::::
+
+## 1.2.2. Работа со службами
+
+**Описание:** Проверил статус SSH (`systemctl status sshd`) и посмотрел лог ядра (`dmesg | tail -n 20`).
+
+:::::::::::::: {.columns}
+::: {.column width="50%"}
+![status sshd](screenshots1/Part2_Task6_ssh_status.png)
+:::
+::: {.column width="50%"}
+![kernel logs](screenshots1/Part2_Task5_kernel_logs.png)
+:::
+::::::::::::::
+
+# Модуль 2. Базовые команды Linux
+
+## 2.1.1 - 2.1.4. Тесты
+
+**2.1.1. Популярная оболочка:** Bash.
+![Ответ 4](screenshots1/Part2_Test1_Answer.png){width=60%}
+
+**2.1.2. Справочная информация:** man.
+![Ответ 5](screenshots1/Part2_Test2_Passed.png){width=60%}
+
+**2.1.3. Повышение привилегий:** Для административной задачи.
+![Ответ 6](screenshots1/Part2_Test4_Answer.png){width=60%}
+
+**2.1.4. SSH и удаленная работа:** Безопасный канал.
+![Ответ 7](screenshots1/Part2_Test5_Answer.png){width=60%}
+
+## 2.1.5 - 2.1.8. Тесты
+
+**2.1.5. Терминал и оболочка:** Терминал — ввод/вывод, оболочка — интерпретатор.
+![Ответ 8](screenshots1/Part2_Test6_Answer.png){width=60%}
+
+**2.1.6. Отсутствие GUI на сервере:** Экономия ресурсов.
+![Ответ 9](screenshots1/Part2_Test7_Answer.png){width=60%}
+
+**2.1.7. Конфигурационные файлы:** `/etc`.
+![Ответ 10](screenshots1/Part2_Test8_Answer.png){width=60%}
+
+**2.1.8. Хранение логов:** `/var/log`.
+![Ответ 11](screenshots1/Part2_Test9_Answer.png){width=60%}
+
+## 2.1.9 - 2.1.12. Тесты
+
+**2.1.9. Роль /opt:** Дополнительное ПО.
+![Ответ 12](screenshots1/Part2_Test10_Answer.png){width=60%}
+
+**2.1.10. Каталог /dev:** Устройства в виде файлов.
+![Ответ 13](screenshots1/Part2_Test11_Passed.png){width=60%}
+
+**2.1.11. Виртуальная ФС /proc:** Состояние памяти и процессов.
+![Ответ 14](screenshots1/Part2_Test12_Answer.png){width=60%}
+
+**2.1.12. Просмотр данных:** `cat`.
+![Ответ 15](screenshots1/Part2_Test13_Answer.png){width=60%}
+
+## 2.1.13 - 2.1.15. Тесты
+
+**2.1.13. Текущая директория:** `pwd`.
+![Ответ 16](screenshots1/Part2_Test14_Answer.png){width=60%}
+
+**2.1.14. Обозначение ~:** Домашняя директория.
+![Ответ 17](screenshots1/Part2_Test15_Answer.png){width=60%}
+
+**2.1.15. Команда ls -l | grep ssh:** Фильтрация строк.
+![Ответ 18](screenshots1/Part2_Test16_Answer.png){width=60%}
+
+# Модуль 2. Практика
+
+## 2.2.1. Анализ дискового пространства и памяти
+
+**Описание:** Использовал `df -h`, `du -sh /var/*`. Проверил данные о процессоре и памяти.
+
+:::::::::::::: {.columns}
+::: {.column width="50%"}
+![df -h](screenshots1/Part2_Task3_df.png)
+![du -sh](screenshots1/Part2_Task4_du.png)
+:::
+::: {.column width="50%"}
+![cpuinfo](screenshots1/Part2_Task13_cpuinfo.png)
+![meminfo](screenshots1/Part2_Task14_meminfo.png)
+:::
+::::::::::::::
+
+## 2.2.2. Работа с устройствами и конфигурацией
+
+**Описание:** Просмотрел устройства в `/dev`. Открыл конфиг SSH в `nano`. Проверил `pwd` и `ls -la`.
+
+:::::::::::::: {.columns}
+::: {.column width="50%"}
+![devices](screenshots1/Part2_Task15_devices.png)
+![nano ssh](screenshots1/Part2_Task9_nano_ssh.png)
+:::
+::: {.column width="50%"}
+![pwd](screenshots1/Part2_Task16_pwd.png)
+![ls all](screenshots1/Part2_Task17_ls_all.png)
+:::
+::::::::::::::
+
+# Модуль 3. Архивация и автоматизация
+
+## 3.1.1 - 3.1.4. Тесты
+
+**3.1.1. Извлечение архива:** `tar -xzf`.
+![Ответ 19](screenshots1/Part3_Test1_Answer.png){width=60%}
+
+**3.1.2. Копирование на сервер:** `scp -r`.
+![Ответ 20](screenshots1/Part3_Test2_Answer.png){width=60%}
+
+**3.1.3. Комментарии в скрипте:** `#`.
+![Ответ 21](screenshots1/Part3_Test3_Answer.png){width=60%}
+
+**3.1.4. Удаление файлов старше 7 дней:** `find ... -mtime +7`.
+![Ответ 22](screenshots1/Part3_Test4_Answer.png){width=60%}
+
+## 3.1.5 - 3.1.8. Тесты
+
+**3.1.5. Справка по grep:** `man grep`.
+![Ответ 23](screenshots1/Part3_Test5_Answer.png){width=60%}
+
+**3.1.6. Команда info:** Справка info.
+![Ответ 24](screenshots1/Part3_Test6_Answer.png){width=60%}
+
+**3.1.7. Справочные файлы:** `/usr/share/doc`.
+![Ответ 25](screenshots1/Part3_Test7_Answer.png){width=60%}
+
+**3.1.8. Тест "Принцип всё есть файл":** 3 из 3.
+![Ответ 26](screenshots1/Part3_Test8_Answer.png){width=60%}
+
+# Модуль 3. Практика
+
+## 3.2.1. Создание и распаковка архива
+
+**Описание:** Создал 3 файла, упаковал в `archive_test.tar.gz`. Распаковал в `~/extracted`.
+
+:::::::::::::: {.columns}
+::: {.column width="50%"}
+![create archive](screenshots1/Part3_Task1_create_archive.png)
+:::
+::: {.column width="50%"}
+![extract archive](screenshots1/Part3_Task2_extract_archive.png)
+:::
+::::::::::::::
+
+## 3.2.2. Передача по SCP
+
+**Описание:** Попытался передать файл на сервер по `scp` (сервер недоступен, что подтверждает выполнение команды).
+
+![scp](screenshots1/Part3_Task3_scp_transfer.png){width=80%}
+
+## 3.2.3. Скрипты и cron
+
+**Описание:** Написал скрипт `clean_logs.sh`, сделал исполняемым, запустил от `sudo`. Настроил cron.
+
+![script content](screenshots1/Part3_Task4_script_content.png){width=80%}
+
+# Заключение
+
+## Главный вывод
+
+- Освоены базовые команды Linux и структура файловой системы.
+- Получены навыки работы с редакторами и архивацией.
+- Написаны Bash-скрипты и настроены задания cron.
+- Первая часть внешнего курса успешно завершена!
+
+# Спасибо за внимание!

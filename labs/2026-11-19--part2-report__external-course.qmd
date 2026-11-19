@@ -1,0 +1,359 @@
+---
+author:
+  name: Чжу Ино
+  email: 1132258331@rudn.ru
+  affiliation:
+    - name: Российский университет дружбы народов
+      country: Российская Федерация
+      city: Москва
+      address: ул. Миклухо-Маклая, д. 6
+title: "Внешний курс Selectel. Часть 2"
+subtitle: "Системное администрирование и основы Linux (Модули 4-7)"
+license: "CC BY"
+date: "2026-11-19"
+date-format: "YYYY-MM-DD"
+format:
+  pdf:
+    output-file: "2026-11-19--part2-report__external-course.pdf"
+    toc: true
+    toc-title: Содержание
+    lof: true
+    lof-title: Список иллюстраций
+    number-sections: true
+    fig-cap-location: bottom
+    fig-align: center
+    documentclass: article
+    fontsize: 12pt
+    linestretch: 1.2
+    geometry:
+      - top=2cm
+      - bottom=2cm
+      - left=2.5cm
+      - right=2.5cm
+    mainfont: "DejaVu Serif"
+    sansfont: "DejaVu Sans"
+    monofont: "DejaVu Sans Mono"
+    lang: ru
+    colorlinks: false
+  docx:
+    output-file: "2026-11-19--part2-report__external-course.docx"
+    toc: true
+    toc-title: Содержание
+    number-sections: true
+  html:
+    output-file: "2026-11-19--part2-report__external-course.html"
+    toc: true
+    toc-title: Содержание
+    number-sections: true
+    embed-resources: true
+---
+
+# Цель работы
+
+Освоение навыков работы с текстовыми редакторами, процессами, правами доступа, пользователями и системными службами в Linux (Модули 4-7).
+
+# Техническое обеспечение
+
+- Операционная система: Fedora Linux 41.
+- Терминал: bash.
+- Утилиты: `awk`, `journalctl`, `nano`, `cron`, `useradd`, `groupadd`, `chmod`, `chown`, `setfacl`, `ps`, `kill`, `nice`, `renice`, `systemctl`.
+
+# Ход выполнения работы
+
+## Модуль 4. Работа с текстом и процессами
+
+### 1.1. Тестовые задания
+
+#### 1.1.1. Команда journalctl
+**Вопрос:** Что делает команда `journalctl -u sshd --since today`?
+**Ответ:** Показывает логи sshd за сегодня.
+**Объяснение:** Ключ `--since today` фильтрует записи, начиная с полуночи текущего дня. Ключ `-u sshd` указывает на вывод логов только для конкретного сервиса (демона SSH).
+![Ответ](screenshots2/Part4_Test1_Answer.png){#fig-1-01 width=90%}
+
+#### 1.1.2. Установка пакета
+**Вопрос:** Что означает вывод `Package "tree-2.1.0-6.fc41.x86_64" is already installed.`?
+**Ответ:** Пакет уже установлен в системе.
+**Объяснение:** Утилита управления пакетами `dnf` перед установкой проверяет текущую базу данных. Если пакет с таким именем и версией уже присутствует, она сообщает пользователю, что установка не требуется.
+![Ответ](screenshots2/Part4_Test2_Answer.png){#fig-1-02 width=90%}
+
+#### 1.1.3. Проверка информации о пакете
+**Вопрос:** Какая команда выводит подробную информацию о пакете?
+**Ответ:** `dnf info tree`.
+**Объяснение:** Подкоманда `info` в утилите `dnf` используется для вывода метаданных о пакете: версии, размера, лицензии, репозитория и краткого описания.
+![Ответ](screenshots2/Part4_Test3_Answer.png){#fig-1-03 width=90%}
+
+#### 1.1.4. Просмотр сетевых интерфейсов
+**Вопрос:** Что показывает вывод команды `ip a`?
+**Ответ:** Список сетевых интерфейсов и их IP-адреса.
+**Объяснение:** Команда `ip a` (сокращение от `ip address`) отображает состояние всех сетевых устройств, их MAC-адреса, назначенные IPv4 и IPv6 адреса, а также статус (UP/DOWN).
+![Ответ](screenshots2/Part4_Test4_Answer.png){#fig-1-04 width=90%}
+
+#### 1.1.5. Версия ОС
+**Вопрос:** Как узнать версию операционной системы?
+**Ответ:** `cat /etc/os-release`.
+**Объяснение:** Файл `/etc/os-release` является стандартным текстовым файлом в современных Linux-системах, содержащим идентификаторы дистрибутива, версию и дополнительные метаданные.
+![Ответ](screenshots2/Part4_Test5_Answer.png){#fig-1-05 width=90%}
+
+#### 1.1.6. Ошибки в логах
+**Вопрос:** Как найти ошибки в логах?
+**Ответ:** `grep -i "error" /var/log/messages`.
+**Объяснение:** Утилита `grep` ищет строки, соответствующие шаблону. Ключ `-i` делает поиск нечувствительным к регистру (игнорирует разницу между "Error" и "error").
+![Ответ](screenshots2/Part4_Test6_Answer.png){#fig-1-06 width=90%}
+
+#### 1.1.7. Запись в файл
+**Вопрос:** Что делает команда `cat > файл.txt`?
+**Ответ:** Создает новый файл и записывает в него.
+**Объяснение:** Символ перенаправления `>` перенаправляет стандартный вывод команды `cat` в указанный файл. Если файл существует, он будет полностью перезаписан.
+![Ответ](screenshots2/Part4_Test7_Passed.png){#fig-1-07 width=90%}
+
+#### 1.1.8. Отличие >> от >
+**Вопрос:** Чем отличается `cat >> файл.txt` от `cat > файл.txt`?
+**Ответ:** `>>` дописывает в конец, `>` перезаписывает.
+**Объяснение:** Двойной символ `>>` используется для добавления данных в конец файла, сохраняя существующее содержимое. Одинарный `>` полностью очищает файл перед записью.
+![Ответ](screenshots2/Part4_Test8_Passed.png){#fig-1-08 width=90%}
+
+#### 1.1.9. less vs cat
+**Вопрос:** Чем `less` отличается от `cat` при просмотре больших файлов?
+**Ответ:** `less` показывает содержимое постранично с навигацией и поиском.
+**Объяснение:** В отличие от `cat`, который мгновенно выводит весь файл в терминал, `less` позволяет прокручивать текст, искать по нему и удобно читать длинные файлы.
+![Ответ](screenshots2/Part4_Test9_Passed.png){#fig-1-09 width=90%}
+
+#### 1.1.10. Выход из less
+**Вопрос:** Какой клавишей можно выйти из утилиты `less`?
+**Ответ:** `q`.
+**Объяснение:** Клавиша `q` (от англ. quit — выйти) завершает режим постраничного просмотра и возвращает пользователя в командную строку.
+![Ответ](screenshots2/Part4_Test10_Answer.png){#fig-1-10 width=90%}
+
+### 1.2. Интерактивные задания
+
+#### 1.2.1. Установка пакета и просмотр информации
+**Описание:** Выполнена установка утилиты `tree` (или проверка её наличия) и просмотр подробной информации о пакете. Это позволяет убедиться в наличии программы и её версии перед использованием.
+![Установка пакета](screenshots2/Part4_Task1_package_install.png){#fig-1-11 width=90%}
+![Информация о пакете](screenshots2/Part4_Task2_package_info.png){#fig-1-12 width=90%}
+
+#### 1.2.2. Сетевые интерфейсы и конфигурация SSH
+**Описание:** Проверены текущие IP-адреса с помощью `ip a`. Открыт и отредактирован конфигурационный файл SSH-демона (`/etc/ssh/sshd_config`) через редактор `nano` для настройки его параметров.
+![Сетевой IP](screenshots2/Part4_Task3_network_ip.png){#fig-1-13 width=90%}
+![ssh config](screenshots2/Part4_Task6_ssh_config.png){#fig-1-16 width=90%}
+
+#### 1.2.3. Работа с текстом и поиск ошибок
+**Описание:** Изучен файл релиза ОС с помощью `less`. Выполнен поиск ошибок в системных логах с помощью `grep`. Создан файл `matrix.txt` и применена команда `awk` для вычисления сумм чисел в четных строках.
+![less OS](screenshots2/Part4_Task4_less_os.png){#fig-1-14 width=90%}
+![grep ошибки](screenshots2/Part4_Task5_grep_error.png){#fig-1-15 width=90%}
+![awk matrix](screenshots2/Part4_Task7_awk_matrix.png){#fig-1-17 width=90%}
+
+#### 1.2.4. Анализ журналов и скрипты
+**Описание:** Проанализированы системные ошибки и неудачные попытки входа по SSH. Написан скрипт для сохранения ошибок в отдельный файл. Настроено ежедневное задание в `cron`. Использована команда `awk` для подсчета неудачных логинов за последние 24 часа.
+![system errors](screenshots2/Part4_Task8_system_errors.png){#fig-1-18 width=90%}
+![ssh failures](screenshots2/Part4_Task9_ssh_failures.png){#fig-1-19 width=90%}
+![script errors](screenshots2/Part4_Task10_script_errors.png){#fig-1-20 width=90%}
+![cron daily](screenshots2/Part4_Task11_cron_daily.png){#fig-1-21 width=90%}
+![awk failed logins](screenshots2/Part4_Task12_awk_failed_logins.png){#fig-1-22 width=90%}
+
+---
+
+## Модуль 5. Управление пользователями и правами
+
+### 2.1. Тестовые задания
+
+#### 2.1.1. Создание пользователя
+**Вопрос:** Какой флаг `useradd` используется для создания домашней директории?
+**Ответ:** `-m`.
+**Объяснение:** По умолчанию `useradd` может не создавать домашнюю папку. Флаг `-m` (или `--create-home`) явно указывает системе создать домашний каталог для нового пользователя.
+![Ответ](screenshots2/Part5_Test1_Answer.png){#fig-2-01 width=90%}
+
+#### 2.1.2. Удаление пользователя
+**Вопрос:** Какая команда удалит пользователя вместе с его домашней директорией?
+**Ответ:** `sudo userdel -r admin`.
+**Объяснение:** Флаг `-r` (remove) при удалении пользователя также удаляет его домашнюю директорию и почтовый ящик, очищая систему от файлов пользователя.
+![Ответ](screenshots2/Part5_Test2_Passed.png){#fig-2-02 width=90%}
+
+#### 2.1.3. Добавление в группу
+**Вопрос:** Что делает команда `sudo usermod -aG sudo admin`?
+**Ответ:** Добавляет пользователя admin в группу sudo, сохраняя остальные группы.
+**Объяснение:** Флаг `-a` (append) критически важен: без него `-G` перезапишет все дополнительные группы пользователя. С `-aG` пользователь добавляется в новую группу, не теряя членства в старых.
+![Ответ](screenshots2/Part5_Test3_Passed.png){#fig-2-03 width=90%}
+
+#### 2.1.4. Безопасное редактирование
+**Вопрос:** Какая команда используется для безопасного редактирования файла `/etc/passwd`?
+**Ответ:** `vipw`.
+**Объяснение:** Утилита `vipw` создает блокировку файла на время редактирования, предотвращая повреждение системной базы данных пользователей параллельными процессами.
+![Ответ](screenshots2/Part5_Test4_Passed.png){#fig-2-04 width=90%}
+
+#### 2.1.5. Тип файла
+**Вопрос:** Что означает первый символ `d` в строке прав доступа `ls -l`?
+**Ответ:** Директория (каталог).
+**Объяснение:** В выводе `ls -l` первый символ указывает на тип файла: `-` — обычный файл, `d` — директория (directory), `l` — символическая ссылка.
+![Ответ](screenshots2/Part5_Test5_Passed.png){#fig-2-05 width=90%}
+
+#### 2.1.6. Просмотр прав
+**Вопрос:** Какую команду надо ввести, чтобы посмотреть, какие права выданы файлам?
+**Ответ:** `ls -l`.
+**Объяснение:** Ключ `-l` (long format) заставляет `ls` выводить расширенную информацию, включая строку прав доступа (rwx), владельца, группу и размер файла.
+![Ответ](screenshots2/Part5_Test6_Passed.png){#fig-2-06 width=90%}
+
+#### 2.1.7. Скрытые файлы
+**Вопрос:** Какую команду надо ввести, чтобы посмотреть права, в том числе скрытым?
+**Ответ:** `ls -la`.
+**Объяснение:** Ключ `-a` (all) показывает все файлы, включая скрытые (начинающиеся с точки). В комбинации с `-l` выводится подробная информация по всем файлам.
+![Ответ](screenshots2/Part5_Test7_Answer.png){#fig-2-07 width=90%}
+
+#### 2.1.8. Восьмеричный формат
+**Вопрос:** Как будут записаны права `rw-` в восьмеричном формате?
+**Ответ:** `6`.
+**Объяснение:** Каждое право имеет числовой вес: `r` (чтение) = 4, `w` (запись) = 2, `x` (выполнение) = 1. Сумма `rw-` составляет 4 + 2 + 0 = 6.
+![Ответ](screenshots2/Part5_Test8_Answer.png){#fig-2-08 width=90%}
+
+#### 2.1.9. Рекурсивное изменение
+**Вопрос:** Какую опцию нужно добавить, чтобы изменить права не только к текущему каталогу, но и ко всем вложенным?
+**Ответ:** `-R`.
+**Объяснение:** Флаг `-R` (recursive) применяет команду (например, `chmod` или `chown`) рекурсивно ко всем файлам и подкаталогам внутри указанной директории.
+![Ответ](screenshots2/Part5_Test9_Answer.png){#fig-2-09 width=90%}
+
+#### 2.1.10. Sticky Bit
+**Вопрос:** Как называется специальное разрешение, благодаря которому файлы могут быть удалены только их владельцами?
+**Ответ:** Sticky Bit.
+**Объяснение:** Sticky Bit (`t`), установленный на директории (например, `/tmp`), позволяет пользователям удалять или переименовывать только те файлы, владельцами которых они являются.
+![Ответ](screenshots2/Part5_Test10_Passed.png){#fig-2-10 width=90%}
+
+#### 2.1.11. SGID
+**Вопрос:** Как называется параметр безопасности, позволяющий запускать файл от имени владельца группы?
+**Ответ:** SGID.
+**Объяснение:** SGID (Set Group ID) на исполняемом файле позволяет процессу запускаться с правами группы, которой принадлежит файл. На директориях SGID заставляет новые файлы наследовать группу директории.
+![Ответ](screenshots2/Part5_Test11_Passed.png){#fig-2-11 width=90%}
+
+#### 2.1.12. SHA-512
+**Вопрос:** Какая команда найдет пользователей с SHA-512?
+**Ответ:** `grep "^\S*:\$6\$" /etc/shadow | cut -d: -f1`.
+**Объяснение:** Хэши паролей в `/etc/shadow` начинаются с идентификатора алгоритма. `$6$` означает SHA-512. Команда ищет такие строки и с помощью `cut` вырезает только имена пользователей.
+![Ответ](screenshots2/Part5_Test12_Answer.png){#fig-2-12 width=90%}
+
+### 2.2. Интерактивные задания
+
+#### 2.2.1. Управление пользователями и группами
+**Описание:** В ходе работы был создан новый пользователь `ivan` и группа `developers`. Пользователь был добавлен в группу, затем основная группа была изменена. В конце пользователь был удален. Также были выполнены операции по созданию файла, изменению его прав и владельца.
+![Создание пользователя](screenshots2/Part5_Task1_create_user.png){#fig-2-13 width=90%}
+![Создание группы](screenshots2/Part5_Task2_create_group.png){#fig-2-14 width=90%}
+![Добавление в группу](screenshots2/Part5_Task3_add_to_group.png){#fig-2-15 width=90%}
+![Смена основной группы](screenshots2/Part5_Task4_change_primary_group.png){#fig-2-16 width=90%}
+![Удаление пользователя](screenshots2/Part5_Task5_delete_user.png){#fig-2-17 width=90%}
+
+#### 2.2.2. Работа с правами доступа и владельцами
+**Описание:** Создан файл `test_permissions.txt`. С помощью `chmod` удалены права на запись для группы и чтение для остальных, затем восстановлены права 644. Владелец файла был изменен на `root`, а затем возвращен обратно текущему пользователю.
+![Создание файла](screenshots2/Part5_Task6_create_file.png){#fig-2-18 width=90%}
+![Удаление прав](screenshots2/Part5_Task7_remove_permissions.png){#fig-2-19 width=90%}
+![Восстановление прав](screenshots2/Part5_Task8_restore_permissions.png){#fig-2-20 width=90%}
+![Смена владельца](screenshots2/Part5_Task9_change_owner_root.png){#fig-2-21 width=90%}
+![Возврат владельца](screenshots2/Part5_Task10_change_owner_back.png){#fig-2-22 width=90%}
+
+#### 2.2.3. Аудит и политики безопасности
+**Описание:** Проверены логи `sudo`, предоставлены права суперпользователя, найден пользователь с SHA-512 хэшем пароля, а также настроена политика устаревания паролей с помощью `chage`.
+![Логи sudo](screenshots2/Part5_Task11_sudo_logs.png){#fig-2-23 width=90%}
+![Предоставление sudo](screenshots2/Part5_Task12_grant_sudo.png){#fig-2-24 width=90%}
+![Пользователи SHA-512](screenshots2/Part5_Task13_sha512_users.png){#fig-2-25 width=90%}
+![Политика паролей](screenshots2/Part5_Task14_password_policy.png){#fig-2-26 width=90%}
+
+---
+
+## Модуль 6. Специальные разрешения и ACL
+
+### 3.1. Тестовые задания
+
+#### 3.1.1. Тест 1
+![Ответ](screenshots2/Part6_Test1_Answer.png){#fig-3-01 width=90%}
+#### 3.1.2. Тест 2
+![Ответ](screenshots2/Part6_Test2_Passed.png){#fig-3-02 width=90%}
+#### 3.1.3. Тест 3
+![Ответ](screenshots2/Part6_Test3_Answer.png){#fig-3-03 width=90%}
+#### 3.1.4. Тест 4
+![Ответ](screenshots2/Part6_Test4_Passed.png){#fig-3-04 width=90%}
+#### 3.1.5. Тест 5
+![Ответ](screenshots2/Part6_Test5_Answer.png){#fig-3-05 width=90%}
+#### 3.1.6. Тест 6
+![Ответ](screenshots2/Part6_Test6_Passed.png){#fig-3-06 width=90%}
+
+### 3.2. Интерактивные задания
+
+#### 3.2.1. Настройка специальных прав и ACL
+**Описание:** В данном модуле отработаны навыки тонкой настройки прав. Настроен `umask`, создан файл с правами 644. Создана группа `admins` и ей дано право на запись. Настроены списки контроля доступа (ACL) для конкретного пользователя. Также применены специальные биты SUID, SGID и Sticky Bit.
+![Права](screenshots2/Part6_Task1_permissions.png){#fig-3-07 width=90%}
+![umask](screenshots2/Part6_Task2_umask.png){#fig-3-08 width=90%}
+![Создание файла 644](screenshots2/Part6_Task3_create_file_644.png){#fig-3-09 width=90%}
+![Права группы](screenshots2/Part6_Task4_admins_group_write.png){#fig-3-10 width=90%}
+![ACL пользователя](screenshots2/Part6_Task5_user_acl.png){#fig-3-11 width=90%}
+![Специальные права группы](screenshots2/Part6_Task6_group_special_perms.png){#fig-3-12 width=90%}
+![Сброс ACL](screenshots2/Part6_Task7_reset_acl.png){#fig-3-13 width=90%}
+![SUID](screenshots2/Part6_Task8_suid_permission.png){#fig-3-14 width=90%}
+![SGID](screenshots2/Part6_Task9_sgid_directory.png){#fig-3-15 width=90%}
+![Sticky Bit](screenshots2/Part6_Task10_sticky_bit.png){#fig-3-16 width=90%}
+
+---
+
+## Модуль 7. Процессы и Службы
+
+### 4.1. Тестовые задания
+
+#### 4.1.1. Тест 1
+![Ответ](screenshots2/Part7_Test1_Answer.png){#fig-4-01 width=90%}
+#### 4.1.2. Тест 2
+![Ответ](screenshots2/Part7_Test2_Answer.png){#fig-4-02 width=90%}
+#### 4.1.3. Тест 3
+![Ответ](screenshots2/Part7_Test3_Passed.png){#fig-4-03 width=90%}
+#### 4.1.4. Тест 4
+![Ответ](screenshots2/Part7_Test4_Passed.png){#fig-4-04 width=90%}
+#### 4.1.5. Тест 5
+![Ответ](screenshots2/Part7_Test5_Answer.png){#fig-4-05 width=90%}
+#### 4.1.6. Тест 6
+![Ответ](screenshots2/Part7_Test6_Passed.png){#fig-4-06 width=90%}
+#### 4.1.7. Тест 7
+![Ответ](screenshots2/Part7_Test7_Passed.png){#fig-4-07 width=90%}
+#### 4.1.8. Тест 8
+![Ответ](screenshots2/Part7_Test8_Passed.png){#fig-4-08 width=90%}
+#### 4.1.9. Тест 9
+![Ответ](screenshots2/Part7_Test9_Passed.png){#fig-4-09 width=90%}
+
+### 4.2. Интерактивные задания
+
+#### 4.2.1. Управление процессами и службами
+**Описание:** Выполнены задачи по управлению процессами: убийство процесса, работа с `bg`/`fg`, изменение приоритета с помощью `nice` и `renice`. Также отработаны команды `systemctl` для включения и выключения автозапуска служб (на примере Nginx), создания своего юнита и проверки его статуса.
+![kill mem](screenshots2/Part7_Task1_kill_high_mem_process.png){#fig-4-10 width=90%}
+![bg fg](screenshots2/Part7_Task2_fg_bg_jobs.png){#fig-4-11 width=90%}
+![htop](screenshots2/Part7_Task3_htop_process_manage.png){#fig-4-12 width=90%}
+![nice](screenshots2/Part7_Task4_nice_15_start.png){#fig-4-13 width=90%}
+![renice](screenshots2/Part7_Task5_renice_to_-5.png){#fig-4-14 width=90%}
+![lowest](screenshots2/Part7_Task6_find_lowest_and_renice.png){#fig-4-15 width=90%}
+![network](screenshots2/Part7_Task7_list_network_services.png){#fig-4-16 width=90%}
+![web](screenshots2/Part7_Task8_web_server_manage.png){#fig-4-17 width=90%}
+![disable](screenshots2/Part7_Task9_disable_service_check.png){#fig-4-18 width=90%}
+![unit](screenshots2/Part7_Task10_custom_python_unit.png){#fig-4-19 width=90%}
+![kill status](screenshots2/Part7_Task11_kill_and_status.png){#fig-4-20 width=90%}
+![reboot](screenshots2/Part7_Task12_reboot_autostart.png){#fig-4-21 width=90%}
+
+---
+
+## Итоговые результаты
+
+### 5.1. Подтверждение прохождения курсов
+В ходе выполнения второй части курса все промежуточные тесты были успешно пройдены, что подтверждается соответствующими сертификатами на скриншотах.
+
+![Автоматизация](screenshots2/Test_Passed_1.png){#fig-5-01 width=90%}
+![Логи](screenshots2/Test_Passed_2.png){#fig-5-02 width=90%}
+![Доступ](screenshots2/Test_Passed_3.png){#fig-5-03 width=90%}
+![Пользователи](screenshots2/Test_Passed_4.png){#fig-5-04 width=90%}
+![Процессы](screenshots2/Test_Passed_5.png){#fig-5-05 width=90%}
+![Безопасность](screenshots2/Test_Passed_6.png){#fig-5-06 width=90%}
+![Справка](screenshots2/Test_Passed_7.png){#fig-5-07 width=90%}
+![Пароли](screenshots2/Test_Passed_8.png){#fig-5-08 width=90%}
+![Текст](screenshots2/Test_Passed_9.png){#fig-5-09 width=90%}
+![Демоны](screenshots2/Test_Passed_10.png){#fig-5-10 width=90%}
+![Права](screenshots2/Test_Passed_11.png){#fig-5-11 width=90%}
+![chmod](screenshots2/Test_Passed_12.png){#fig-5-12 width=90%}
+![systemd](screenshots2/Test_Passed_13.png){#fig-5-13 width=90%}
+![Спец права](screenshots2/Test_Passed_14.png){#fig-5-14 width=90%}
+![Приоритеты](screenshots2/Test_Passed_15.png){#fig-5-15 width=90%}
+
+---
+
+# Выводы
+
+В ходе выполнения второй части курса были освоены навыки работы с текстом, процессами, правами доступа, пользователями и системными службами в Linux. Все модули пройдены успешно, о чем свидетельствуют приложенные скриншоты.

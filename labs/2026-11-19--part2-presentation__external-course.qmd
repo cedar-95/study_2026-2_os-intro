@@ -1,0 +1,302 @@
+---
+author:
+  name: Чжу Ино
+  email: 1132258331@rudn.ru
+  affiliation:
+    - name: Российский университет дружбы народов
+      country: Российская Федерация
+      city: Москва
+      address: ул. Миклухо-Маклая, д. 6
+title: "Внешний курс Selectel. Часть 2"
+subtitle: "Системное администрирование и основы Linux (Модули 4-7)"
+date: today
+date-format: "YYYY-MM-DD"
+format:
+  beamer:
+    theme: "Madrid"
+    colortheme: "default"
+    pdf-engine: xelatex
+    mainfont: "DejaVu Sans"
+    monofont: "DejaVu Sans Mono"
+    lang: ru
+    aspectratio: 169
+    include-in-header:
+      text: |
+        \usepackage{xcolor}
+        \usepackage{graphicx}
+        
+        \definecolor{darkbluegrey}{RGB}{44, 62, 80}
+        \definecolor{myyellow}{RGB}{255, 215, 0}
+        
+        \setbeamercolor{palette primary}{bg=darkbluegrey, fg=white}
+        \setbeamercolor{palette secondary}{bg=darkbluegrey, fg=white}
+        \setbeamercolor{palette tertiary}{bg=darkbluegrey, fg=white}
+        \setbeamercolor{frametitle}{bg=darkbluegrey, fg=white}
+        \setbeamercolor{title}{bg=darkbluegrey, fg=white}
+        
+        \setbeamercolor{section in head/foot}{bg=myyellow, fg=black}
+        
+        \logo{\includegraphics[width=0.8cm]{logo_rudn.png}}
+        
+        \setbeamertemplate{headline}{
+          \leavevmode
+          \hbox{
+            \begin{beamercolorbox}[wd=\paperwidth,ht=2.8ex,dp=1.125ex]{palette primary}
+              \insertsectionnavigationhorizontal{\paperwidth}{}{}
+            \end{beamercolorbox}
+          }
+        }
+---
+
+# Информация
+
+## Докладчик
+:::::::::::::: {.columns align=center}
+::: {.column width="70%"}
+- Чжу Ино
+- группа НПИбд-03-25
+- Российский университет дружбы народов им. П. Лумумбы
+- Студенческий билет: 1132258331
+:::
+::: {.column width="30%"}
+![](author.jpg)
+:::
+::::::::::::::
+
+## Общая информация
+- **Цель:** Освоение навыков работы с текстом, процессами, правами доступа и службами.
+- **Задачи:**
+    - Выполнить тесты по модулям 4-7.
+    - Выполнить практические задания в терминале.
+
+# Модуль 4. Работа с текстом и процессами
+
+## Тест 4.1.1 (journalctl) {.allowframebreaks}
+**Вопрос:** Что делает команда `journalctl -u sshd --since today`?
+**Ответ:** Показывает логи sshd за сегодня.
+**Объяснение:** Ключ `--since today` фильтрует записи с полуночи текущего дня, `-u sshd` оставляет только логи SSH.
+
+![Ответ](screenshots2/Part4_Test1_Answer.png){width=80%}
+
+## Тест 4.1.2 (DNF) {.allowframebreaks}
+**Вопрос:** Что означает вывод `Package ... is already installed.`?
+**Ответ:** Пакет уже установлен.
+**Объяснение:** `dnf` проверяет базу данных и сообщает, если установка не требуется.
+
+![Ответ](screenshots2/Part4_Test2_Answer.png){width=80%}
+
+## Тест 4.1.3 (DNF info) {.allowframebreaks}
+**Вопрос:** Какая команда выводит подробную информацию о пакете?
+**Ответ:** `dnf info tree`.
+**Объяснение:** Команда `info` выводит метаданные пакета (версию, размер и т.д.).
+
+![Ответ](screenshots2/Part4_Test3_Answer.png){width=80%}
+
+## Тест 4.1.4 (IP) {.allowframebreaks}
+**Вопрос:** Что показывает вывод команды `ip a`?
+**Ответ:** Список сетевых интерфейсов и их IP-адреса.
+**Объяснение:** `ip a` отображает состояние сетевых устройств.
+
+![Ответ](screenshots2/Part4_Test4_Answer.png){width=80%}
+
+## Тест 4.1.5 (OS Release) {.allowframebreaks}
+**Вопрос:** Как узнать версию операционной системы?
+**Ответ:** `cat /etc/os-release`.
+**Объяснение:** Стандартный файл с информацией о дистрибутиве.
+
+![Ответ](screenshots2/Part4_Test5_Answer.png){width=80%}
+
+## Тест 4.1.6 (Grep error) {.allowframebreaks}
+**Вопрос:** Как найти ошибки в логах?
+**Ответ:** `grep -i "error" /var/log/messages`.
+**Объяснение:** Ключ `-i` игнорирует регистр символов при поиске.
+
+![Ответ](screenshots2/Part4_Test6_Answer.png){width=80%}
+
+## Тест 4.1.7 (Cat create) {.allowframebreaks}
+**Вопрос:** Что делает команда `cat > файл.txt`?
+**Ответ:** Создает новый файл и записывает в него.
+**Объяснение:** Символ `>` перезаписывает файл.
+
+![Ответ](screenshots2/Part4_Test7_Passed.png){width=80%}
+
+## Тест 4.1.8 (Cat append) {.allowframebreaks}
+**Вопрос:** Чем отличается `cat >> файл.txt` от `cat > файл.txt`?
+**Ответ:** `>>` дописывает, `>` перезаписывает.
+**Объяснение:** Двойной символ `>>` добавляет данные в конец файла.
+
+![Ответ](screenshots2/Part4_Test8_Passed.png){width=80%}
+
+## Тест 4.1.9 (Less vs Cat) {.allowframebreaks}
+**Вопрос:** Чем `less` отличается от `cat`?
+**Ответ:** Показывает постранично с навигацией.
+**Объяснение:** `less` позволяет прокручивать и искать текст, в отличие от `cat`.
+
+![Ответ](screenshots2/Part4_Test9_Passed.png){width=80%}
+
+## Тест 4.1.10 (Exit Less) {.allowframebreaks}
+**Вопрос:** Какой клавишей выйти из `less`?
+**Ответ:** `q`.
+**Объяснение:** Клавиша `q` (quit) завершает просмотр.
+
+![Ответ](screenshots2/Part4_Test10_Answer.png){width=80%}
+
+## Практика Модуля 4 {.allowframebreaks}
+**Описание:** Установка пакета, просмотр информации, работа с сетью и текстом, анализ логов.
+
+![Установка](screenshots2/Part4_Task1_package_install.png){width=90%}
+![Информация](screenshots2/Part4_Task2_package_info.png){width=90%}
+![Сетевой IP](screenshots2/Part4_Task3_network_ip.png){width=90%}
+![less OS](screenshots2/Part4_Task4_less_os.png){width=90%}
+![grep ошибки](screenshots2/Part4_Task5_grep_error.png){width=90%}
+![ssh config](screenshots2/Part4_Task6_ssh_config.png){width=90%}
+![awk matrix](screenshots2/Part4_Task7_awk_matrix.png){width=90%}
+![system errors](screenshots2/Part4_Task8_system_errors.png){width=90%}
+![ssh failures](screenshots2/Part4_Task9_ssh_failures.png){width=90%}
+![script errors](screenshots2/Part4_Task10_script_errors.png){width=90%}
+![cron daily](screenshots2/Part4_Task11_cron_daily.png){width=90%}
+![awk failed logins](screenshots2/Part4_Task12_awk_failed_logins.png){width=90%}
+
+# Модуль 5. Управление пользователями и правами
+
+## Тест 5.1.1 (Useradd) {.allowframebreaks}
+**Вопрос:** Какой флаг `useradd` создает домашнюю директорию?
+**Ответ:** `-m`.
+**Объяснение:** Флаг `-m` явно указывает создать домашний каталог.
+
+![Ответ](screenshots2/Part5_Test1_Answer.png){width=80%}
+
+## Тест 5.1.2 (Userdel) {.allowframebreaks}
+**Вопрос:** Какая команда удалит пользователя вместе с домашней директорией?
+**Ответ:** `sudo userdel -r admin`.
+**Объяснение:** Флаг `-r` удаляет домашнюю директорию.
+
+![Ответ](screenshots2/Part5_Test2_Passed.png){width=80%}
+
+## Тест 5.1.3 (Usermod) {.allowframebreaks}
+**Вопрос:** Что делает `sudo usermod -aG sudo admin`?
+**Ответ:** Добавляет пользователя в группу, сохраняя остальные.
+**Объяснение:** Флаг `-a` (append) добавляет в группу без удаления из других.
+
+![Ответ](screenshots2/Part5_Test3_Passed.png){width=80%}
+
+## Тест 5.1.4 (Vipw) {.allowframebreaks}
+**Вопрос:** Команда для безопасного редактирования `/etc/passwd`?
+**Ответ:** `vipw`.
+**Объяснение:** `vipw` блокирует файл на время редактирования.
+
+![Ответ](screenshots2/Part5_Test4_Passed.png){width=80%}
+
+## Тест 5.1.5 (Directory) {.allowframebreaks}
+**Вопрос:** Что означает символ `d` в `ls -l`?
+**Ответ:** Директория (каталог).
+**Объяснение:** `d` означает directory.
+
+![Ответ](screenshots2/Part5_Test5_Passed.png){width=80%}
+
+## Тест 5.1.6 (ls -l) {.allowframebreaks}
+**Вопрос:** Команда для просмотра прав файла?
+**Ответ:** `ls -l`.
+**Объяснение:** Ключ `-l` выводит расширенную информацию.
+
+![Ответ](screenshots2/Part5_Test6_Passed.png){width=80%}
+
+## Тест 5.1.7 (ls -la) {.allowframebreaks}
+**Вопрос:** Команда для просмотра прав, включая скрытые файлы?
+**Ответ:** `ls -la`.
+**Объяснение:** Ключ `-a` показывает все файлы.
+
+![Ответ](screenshots2/Part5_Test7_Answer.png){width=80%}
+
+## Тест 5.1.8 (Octal) {.allowframebreaks}
+**Вопрос:** Как записать `rw-` в восьмеричном формате?
+**Ответ:** `6`.
+**Объяснение:** `r`=4, `w`=2, `-`=0. Итого 6.
+
+![Ответ](screenshots2/Part5_Test8_Answer.png){width=80%}
+
+## Тест 5.1.9 (Recursive) {.allowframebreaks}
+**Вопрос:** Какую опцию добавить для рекурсивного изменения прав?
+**Ответ:** `-R`.
+**Объяснение:** `-R` (recursive) применяет команду ко всем вложенным файлам.
+
+![Ответ](screenshots2/Part5_Test9_Answer.png){width=80%}
+
+## Тест 5.1.10 (Sticky Bit) {.allowframebreaks}
+**Вопрос:** Разрешение, при котором файлы удаляют только их владельцы?
+**Ответ:** Sticky Bit.
+**Объяснение:** Защищает файлы в общих папках от удаления другими пользователями.
+
+![Ответ](screenshots2/Part5_Test10_Passed.png){width=80%}
+
+## Тест 5.1.11 (SGID) {.allowframebreaks}
+**Вопрос:** Параметр безопасности, позволяющий запускать от имени владельца группы?
+**Ответ:** SGID.
+**Объяснение:** SGID позволяет процессу наследовать права группы.
+
+![Ответ](screenshots2/Part5_Test11_Passed.png){width=80%}
+
+## Тест 5.1.12 (SHA-512) {.allowframebreaks}
+**Вопрос:** Какая команда найдет пользователей с SHA-512?
+**Ответ:** `grep "^\S*:\$6\$" /etc/shadow | cut -d: -f1`.
+**Объяснение:** Хэши SHA-512 начинаются с `$6$`.
+
+![Ответ](screenshots2/Part5_Test12_Answer.png){width=80%}
+
+## Практика Модуля 5 {.allowframebreaks}
+**Описание:** Создание и удаление пользователей и групп, изменение прав и владельцев, аудит безопасности.
+
+![Создание пользователя](screenshots2/Part5_Task1_create_user.png){width=90%}
+![Создание группы](screenshots2/Part5_Task2_create_group.png){width=90%}
+![Добавление в группу](screenshots2/Part5_Task3_add_to_group.png){width=90%}
+![Смена основной группы](screenshots2/Part5_Task4_change_primary_group.png){width=90%}
+![Удаление пользователя](screenshots2/Part5_Task5_delete_user.png){width=90%}
+![Создание файла](screenshots2/Part5_Task6_create_file.png){width=90%}
+![Удаление прав](screenshots2/Part5_Task7_remove_permissions.png){width=90%}
+![Восстановление прав](screenshots2/Part5_Task8_restore_permissions.png){width=90%}
+![Смена владельца](screenshots2/Part5_Task9_change_owner_root.png){width=90%}
+![Возврат владельца](screenshots2/Part5_Task10_change_owner_back.png){width=90%}
+![Логи sudo](screenshots2/Part5_Task11_sudo_logs.png){width=90%}
+![Предоставление sudo](screenshots2/Part5_Task12_grant_sudo.png){width=90%}
+![Пользователи SHA-512](screenshots2/Part5_Task13_sha512_users.png){width=90%}
+![Политика паролей](screenshots2/Part5_Task14_password_policy.png){width=90%}
+
+# Модуль 6 и 7. Специальные права и Процессы
+
+## Практика Модуля 6 (ACL и спецправа) {.allowframebreaks}
+**Описание:** Настройка umask, ACL, SUID, SGID, Sticky Bit.
+
+![Права](screenshots2/Part6_Task1_permissions.png){width=90%}
+![umask](screenshots2/Part6_Task2_umask.png){width=90%}
+![Создание 644](screenshots2/Part6_Task3_create_file_644.png){width=90%}
+![Права группы](screenshots2/Part6_Task4_admins_group_write.png){width=90%}
+![ACL](screenshots2/Part6_Task5_user_acl.png){width=90%}
+![Спецправа группы](screenshots2/Part6_Task6_group_special_perms.png){width=90%}
+![Сброс ACL](screenshots2/Part6_Task7_reset_acl.png){width=90%}
+![SUID](screenshots2/Part6_Task8_suid_permission.png){width=90%}
+![SGID](screenshots2/Part6_Task9_sgid_directory.png){width=90%}
+![Sticky Bit](screenshots2/Part6_Task10_sticky_bit.png){width=90%}
+
+## Практика Модуля 7 (Процессы) {.allowframebreaks}
+**Описание:** Управление процессами (kill, bg, fg, nice, renice) и службами (systemctl).
+
+![kill](screenshots2/Part7_Task1_kill_high_mem_process.png){width=90%}
+![bg fg](screenshots2/Part7_Task2_fg_bg_jobs.png){width=90%}
+![htop](screenshots2/Part7_Task3_htop_process_manage.png){width=90%}
+![nice](screenshots2/Part7_Task4_nice_15_start.png){width=90%}
+![renice](screenshots2/Part7_Task5_renice_to_-5.png){width=90%}
+![lowest](screenshots2/Part7_Task6_find_lowest_and_renice.png){width=90%}
+![network](screenshots2/Part7_Task7_list_network_services.png){width=90%}
+![web](screenshots2/Part7_Task8_web_server_manage.png){width=90%}
+![disable](screenshots2/Part7_Task9_disable_service_check.png){width=90%}
+![unit](screenshots2/Part7_Task10_custom_python_unit.png){width=90%}
+![kill status](screenshots2/Part7_Task11_kill_and_status.png){width=90%}
+![reboot](screenshots2/Part7_Task12_reboot_autostart.png){width=90%}
+
+# Итоги
+
+## Результаты
+- Все тесты по модулям 4-7 пройдены успешно.
+- Отработаны практические навыки работы с текстом, правами, пользователями и службами.
+
+# Спасибо за внимание!

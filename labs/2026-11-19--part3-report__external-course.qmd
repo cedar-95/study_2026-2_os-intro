@@ -1,0 +1,455 @@
+---
+author:
+  name: Чжу Ино
+  email: 1132258331@rudn.ru
+  affiliation:
+    - name: Российский университет дружбы народов
+      country: Российская Федерация
+      city: Москва
+      address: ул. Миклухо-Маклая, д. 6
+title: "Внешний курс Selectel. Часть 3"
+subtitle: "Системное администрирование и основы Linux (Модули 8-11)"
+license: "CC BY"
+date: "2026-11-19"
+date-format: "YYYY-MM-DD"
+format:
+  pdf:
+    output-file: "2026-11-19--part3-report__external-course.pdf"
+    toc: true
+    toc-title: Содержание
+    lof: true
+    lof-title: Список иллюстраций
+    number-sections: true
+    fig-cap-location: bottom
+    fig-align: center
+    documentclass: article
+    fontsize: 12pt
+    linestretch: 1.2
+    geometry:
+      - top=2cm
+      - bottom=2cm
+      - left=2.5cm
+      - right=2.5cm
+    mainfont: "DejaVu Serif"
+    sansfont: "DejaVu Sans"
+    monofont: "DejaVu Sans Mono"
+    lang: ru
+    colorlinks: false
+  docx:
+    output-file: "2026-11-19--part3-report__external-course.docx"
+    toc: true
+    toc-title: Содержание
+    number-sections: true
+  html:
+    output-file: "2026-11-19--part3-report__external-course.html"
+    toc: true
+    toc-title: Содержание
+    number-sections: true
+    embed-resources: true
+---
+
+# Цель работы
+
+Освоение навыков сетевой диагностики, настройки SSH, управления логированием, а также работы с контейнерами (Podman).
+
+# Ход выполнения работы
+
+## Модуль 8. Базовая диагностика сети и безопасность
+
+### 1.1. Тестовые задания
+
+#### 1.1.1. Назначение IP-адреса
+**Вопрос:** Какой командой можно назначить IP-адрес вручную?
+**Ответ:** `ip a add 192.168.122.2/24 dev eth0`.
+**Объяснение:** Команда `ip a add` используется для добавления IP-адреса интерфейсу.
+![Ответ](screenshots3/Part8_Test1_Passed.png){#fig-1-01 width=90%}
+
+#### 1.1.2. Удаление IP-адреса
+**Вопрос:** Какая команда используется для удаления IP с интерфейса?
+**Ответ:** `ip del addr 192.168.122.2 dev eth0`.
+**Объяснение:** Подкоманда `del` удаляет указанный IP-адрес.
+![Ответ](screenshots3/Part8_Test2_Passed.png){#fig-1-02 width=90%}
+
+#### 1.1.3. Сохранение IP после перезагрузки
+**Вопрос:** Что произойдет при перезагрузке, если IP был задан только через `ip`?
+**Ответ:** IP-адрес исчезнет.
+**Объяснение:** Команды `ip` вносят изменения только в оперативную память.
+![Ответ](screenshots3/Part8_Test3_Passed.png){#fig-1-03 width=90%}
+
+#### 1.1.4. Настройка шлюза
+**Вопрос:** Где задается шлюз по умолчанию в конфигурации интерфейса?
+**Ответ:** В поле `gateway` в `/etc/network/interfaces`.
+**Объяснение:** В классических системах Debian/Ubuntu шлюз указывается директивой `gateway`.
+![Ответ](screenshots3/Part8_Test4_Passed.png){#fig-1-04 width=90%}
+
+#### 1.1.5. Проверка открытых портов
+**Вопрос:** Какая команда показывает открытые TCP-порты и процессы?
+**Ответ:** `ss -tulpn`.
+**Объяснение:** `-t` (TCP), `-u` (UDP), `-l` (слушающие), `-p` (процессы), `-n` (номера).
+![Ответ](screenshots3/Part8_Test5_Passed.png){#fig-1-05 width=90%}
+
+#### 1.1.6. Флаги ss
+**Вопрос:** Какой флаг в `ss` включает отображение портов и PID?
+**Ответ:** `-p`.
+**Объяснение:** Флаг `-p` (processes) показывает процесс, слушающий порт.
+![Ответ](screenshots3/Part8_Test6_Passed.png){#fig-1-06 width=90%}
+
+#### 1.1.7. Утилита dig
+**Вопрос:** Что делает команда `dig`?
+**Ответ:** Выполняет DNS-запрос и отображает IP-адреса.
+**Объяснение:** `dig` — мощная утилита для тестирования DNS.
+![Ответ](screenshots3/Part8_Test7_Passed.png){#fig-1-07 width=90%}
+
+#### 1.1.8. Проверка TCP-портов
+**Вопрос:** Проверка подключения к удаленному TCP-порту без передачи данных?
+**Ответ:** `nc -vz`.
+**Объяснение:** `nc` с флагами `-v` и `-z` проверяет доступность порта.
+![Ответ](screenshots3/Part8_Test8_Passed.png){#fig-1-08 width=90%}
+
+#### 1.1.9. Поиск в справке
+**Вопрос:** Какая команда поможет найти информацию по конкретному параметру?
+**Ответ:** `man`.
+**Объяснение:** `man` открывает руководство пользователя.
+![Ответ](screenshots3/Part8_Test9_Answer.png){#fig-1-09 width=90%}
+
+#### 1.1.10. Просмотр таблицы маршрутизации
+**Вопрос:** Какая команда показывает таблицу маршрутизации?
+**Ответ:** `ip route`.
+**Объяснение:** `ip route` отображает маршруты.
+![Ответ](screenshots3/Part8_Test10_Passed.png){#fig-1-10 width=90%}
+
+#### 1.1.11. Изменение MAC-адреса
+**Вопрос:** Как изменить MAC-адрес?
+**Ответ:** `ip link set dev eth0 address ...`.
+**Объяснение:** Команда `ip link set` меняет параметры интерфейса.
+![Ответ](screenshots3/Part8_Test11_Passed.png){#fig-1-11 width=90%}
+
+#### 1.1.12. Тест соединения
+**Вопрос:** Какая утилита проверяет соединение?
+**Ответ:** `ping`.
+**Объяснение:** `ping` отправляет ICMP-эхо-запросы.
+![Ответ](screenshots3/Part8_Test12_Passed.png){#fig-1-12 width=90%}
+
+#### 1.1.13. Статус интерфейса
+**Вопрос:** Как посмотреть статус интерфейса?
+**Ответ:** `ip link`.
+**Объяснение:** Показывает состояние канального уровня.
+![Ответ](screenshots3/Part8_Test13_Passed.png){#fig-1-13 width=90%}
+
+#### 1.1.14. Настройка DNS
+**Вопрос:** Где настраивается DNS?
+**Ответ:** `/etc/resolv.conf`.
+**Объяснение:** Файл содержит адреса DNS-серверов.
+![Ответ](screenshots3/Part8_Test14_Passed.png){#fig-1-14 width=90%}
+
+#### 1.1.15. Тест по IPv6
+**Вопрос:** Какой адрес является IPv6?
+**Ответ:** `::1`.
+**Объяснение:** `::1` — петлевой адрес IPv6.
+![Ответ](screenshots3/Part8_Test15_Answer.png){#fig-1-15 width=90%}
+
+### 1.2. Интерактивные задания
+
+#### 1.2.1. Настройка статического IP и сети
+**Описание:** Выполнена ручная настройка IP, проверка конфигурации интерфейса, ping внешнего ресурса и удаление IP.
+![static ip](screenshots3/Part8_Task1_static_ip_manual.png){#fig-1-16 width=90%}
+![interfaces](screenshots3/Part8_Task2_interfaces_eth0_config.png){#fig-1-17 width=90%}
+![ping](screenshots3/Part8_Task3_ping_external.png){#fig-1-18 width=90%}
+![delete ip](screenshots3/Part8_Task4_delete_ip_address.png){#fig-1-19 width=90%}
+
+#### 1.2.2. Веб-сервер и проверка портов
+**Описание:** Запущен веб-сервер Nginx на 80 порту, проверено его прослушивание. Выполнен `dig` для получения IP популярных сервисов. Проверен порт SSH.
+![port 80](screenshots3/Part8_Task5_web_server_port80.png){#fig-1-20 width=90%}
+![dig](screenshots3/Part8_Task6_dig_ip_lookup.png){#fig-1-21 width=90%}
+![ssh port](screenshots3/Part8_Task7_check_ssh_port.png){#fig-1-22 width=90%}
+
+#### 1.2.3. SSH и UFW
+**Описание:** Настроен SSH (изменен порт, отключен вход по паролю, настроена авторизация по ключу, ограничен доступ пользователей). Настроен UFW для ограничения доступа только с локальной сети.
+![ssh port](screenshots3/Part8_Task8_change_ssh_port.png){#fig-1-23 width=90%}
+![ssh key](screenshots3/Part8_Task9_ssh_key_auth.png){#fig-1-24 width=90%}
+![allow users](screenshots3/Part8_Task10_ssh_allow_users.png){#fig-1-25 width=90%}
+![ufw ssh](screenshots3/Part8_Task11_ufw_ssh_only.png){#fig-1-26 width=90%}
+![ufw local](screenshots3/Part8_Task12_ufw_ssh_local_network.png){#fig-1-27 width=90%}
+
+#### 1.2.4. Настройка Fail2ban
+**Описание:** Настроен fail2ban для блокировки IP после множественных запросов.
+![jail](screenshots3/Part8_Task13_fail2ban_nginx_jail.png){#fig-1-28 width=90%}
+![block verify](screenshots3/Part8_Task14_fail2ban_block_verify.png){#fig-1-29 width=90%}
+
+---
+
+## Модуль 9. Управление пакетами
+
+### 2.1. Тестовые задания
+
+#### 2.1.1. Управление пакетами
+**Вопрос:** Базовые команды работы с пакетами.
+**Ответ:** Обновление и установка пакетов.
+**Объяснение:** Управление ПО осуществляется пакетными менеджерами (dnf/apt).
+![Ответ](screenshots3/Part9_Test1_Passed.png){#fig-2-01 width=90%}
+
+#### 2.1.2. Управление пакетами 2
+**Вопрос:** Поиск и фильтрация пакетов.
+**Ответ:** Использование `grep` и `search`.
+**Объяснение:** Позволяет найти нужное ПО в репозиториях.
+![Ответ](screenshots3/Part9_Test2_Passed.png){#fig-2-02 width=90%}
+
+#### 2.1.3. Управление пакетами 3
+**Вопрос:** Обновление системы.
+**Ответ:** `upgrade` / `update`.
+**Объяснение:** Устанавливает новые версии программ.
+![Ответ](screenshots3/Part9_Test3_Passed.png){#fig-2-03 width=90%}
+
+#### 2.1.4. Управление пакетами 4
+**Вопрос:** Удаление пакетов.
+**Ответ:** `remove` / `purge`.
+**Объяснение:** Удаляет ПО и его конфигурации.
+![Ответ](screenshots3/Part9_Test4_Passed.png){#fig-2-04 width=90%}
+
+#### 2.1.5. Управление пакетами 5
+**Вопрос:** Зависимости.
+**Ответ:** Разрыв зависимостей.
+**Объяснение:** Удаление пакета может сломать другие программы.
+![Ответ](screenshots3/Part9_Test5_Passed.png){#fig-2-05 width=90%}
+
+#### 2.1.6. Управление пакетами 6
+**Вопрос:** Автоматические обновления.
+**Ответ:** Настройка таймеров.
+**Объяснение:** `dnf-automatic` позволяет обновлять систему в фоне.
+![Ответ](screenshots3/Part9_Test6_Answer.png){#fig-2-06 width=90%}
+
+#### 2.1.7. Управление пакетами 7
+**Вопрос:** Очистка кэша.
+**Ответ:** `clean all`.
+**Объяснение:** Удаляет скачанные файлы пакетов для экономии места.
+![Ответ](screenshots3/Part9_Test7_Passed.png){#fig-2-07 width=90%}
+
+#### 2.1.8. Управление пакетами 8
+**Вопрос:** Локальная установка.
+**Ответ:** Установка RPM-файлов.
+**Объяснение:** `dnf install ./package.rpm` устанавливает локальный файл.
+![Ответ](screenshots3/Part9_Test8_Answer.png){#fig-2-08 width=90%}
+
+### 2.2. Интерактивные задания
+
+#### 2.2.1. Установка и удаление пакетов
+**Описание:** Установлен пакет `htop`, затем удален с очисткой, и установлен заново. Обновлена система, настроены автообновления безопасности, удалены устаревшие зависимости.
+![install htop](screenshots3/Part9_Task1_find_install_htop.png){#fig-2-09 width=90%}
+![update](screenshots3/Part9_Task3_full_system_update.png){#fig-2-11 width=90%}
+![auto sec](screenshots3/Part9_Task4_auto_security_updates.png){#fig-2-12 width=90%}
+
+#### 2.2.2. Ручная установка пакетов
+**Описание:** Скачан и установлен RPM-пакет вручную. Проанализированы зависимости.
+![manual rpm](screenshots3/Part9_Task6_manual_rpm_install.png){#fig-2-14 width=90%}
+![analyze dep](screenshots3/Part9_Task7_analyze_dependencies.png){#fig-2-15 width=90%}
+
+---
+
+## Модуль 10. Логирование и инциденты
+
+### 3.1. Тестовые задания
+
+#### 3.1.1. Работа с логами
+**Вопрос:** Просмотр системных журналов.
+**Ответ:** `journalctl` / `less`.
+**Объяснение:** Инструменты для чтения бинарных и текстовых логов.
+![Ответ](screenshots3/Part10_Test1_Passed.png){#fig-3-01 width=90%}
+
+#### 3.1.2. Работа с логами 2
+**Вопрос:** Очистка удаленных пакетов.
+**Ответ:** `purge`.
+**Объяснение:** Удаление пакета вместе с конфигурацией.
+![Ответ](screenshots3/Part10_Test3_Answer.png){#fig-3-02 width=90%}
+
+#### 3.1.3. Работа с логами 3
+**Вопрос:** Обновление списков пакетов.
+**Ответ:** `apt update`.
+**Объяснение:** Синхронизация локального кэша с репозиториями.
+![Ответ](screenshots3/Part10_Test4_Answer.png){#fig-3-03 width=90%}
+
+#### 3.1.4. Работа с логами 4
+**Вопрос:** Установка новых версий.
+**Ответ:** `upgrade`.
+**Объяснение:** Обновление установленного ПО.
+![Ответ](screenshots3/Part10_Test5_Passed.png){#fig-3-04 width=90%}
+
+#### 3.1.5. Работа с логами 5
+**Вопрос:** Конфигурация Fail2ban.
+**Ответ:** `jail.conf` / `jail.local`.
+**Объяснение:** Файлы настройки блокировок.
+![Ответ](screenshots3/Part10_Test6_Passed.png){#fig-3-05 width=90%}
+
+### 3.2. Интерактивные задания
+
+#### 3.2.1. Просмотр и анализ логов
+**Описание:** Просмотр логов постранично. Выведены последние 20 записей журнала. Проверено расположение лога ошибок Nginx. Проанализирован auth.log.
+![view pager](screenshots3/Part10_Task1_view_logs_pager.png){#fig-3-06 width=90%}
+![last 20](screenshots3/Part10_Task2_journalctl_last_20.png){#fig-3-07 width=90%}
+![nginx error](screenshots3/Part10_Task3_nginx_error_log_location.png){#fig-3-08 width=90%}
+![manual auth](screenshots3/Part10_Task4_manual_auth_log_analysis.png){#fig-3-09 width=90%}
+![filter cron](screenshots3/Part10_Task5_journalctl_filter_cron.png){#fig-3-10 width=90%}
+
+#### 3.2.2. Управление службами логов и анализ событий
+**Описание:** Проверены статусы служб логов. Сгенерировано тестовое сообщение через `logger`. Найдены записи с уровнем error. Настроен rsyslog.
+![check services](screenshots3/Part10_Task6_check_log_services.png){#fig-3-11 width=90%}
+![logger](screenshots3/Part10_Task7_logger_test.png){#fig-3-12 width=90%}
+![error level](screenshots3/Part10_Task8_journalctl_error_level.png){#fig-3-13 width=90%}
+![auth rsyslog](screenshots3/Part10_Task9_find_auth_rsyslog_config.png){#fig-3-14 width=90%}
+![warning log](screenshots3/Part10_Task10_send_warning_log.png){#fig-3-15 width=90%}
+
+#### 3.2.3. Расследование инцидентов
+**Описание:** Найдены неудачные попытки входа, извлечены IP успешных и неудачных подключений. Найдены топ-5 IP. Проанализированы события за последние 15 минут. Проверены попытки входа от несуществующих пользователей.
+![failed pass](screenshots3/Part10_Task11_find_failed_password.png){#fig-3-16 width=90%}
+![extract ips](screenshots3/Part10_Task12_extract_success_ips.png){#fig-3-17 width=90%}
+![unique ips](screenshots3/Part10_Task13_unique_failed_ips.png){#fig-3-18 width=90%}
+![top 5](screenshots3/Part10_Task14_top5_success_ips.png){#fig-3-19 width=90%}
+![15 min](screenshots3/Part10_Task15_journalctl_last_15_min.png){#fig-3-20 width=90%}
+![invalid user](screenshots3/Part10_Task16_invalid_user_attempts.png){#fig-3-21 width=90%}
+![most failed](screenshots3/Part10_Task17_most_failed_ip.png){#fig-3-22 width=90%}
+![incident report](screenshots3/Part10_Task18_save_incident_report.png){#fig-3-23 width=90%}
+![sha256](screenshots3/Part10_Task19_sha256_incident_report.png){#fig-3-24 width=90%}
+![sudo history](screenshots3/Part10_Task20_check_sudo_history.png){#fig-3-25 width=90%}
+
+#### 3.2.4. Ротация и форвардинг логов
+**Описание:** Изучена конфигурация logrotate. Настроен свой файл logrotate. Выполнен dry-run и принудительная ротация. Настроен rsyslog для пересылки логов.
+![study logrotate](screenshots3/Part10_Task21_study_logrotate_config.png){#fig-3-26 width=90%}
+![create testapp](screenshots3/Part10_Task22_create_testapp_logrotate.png){#fig-3-27 width=90%}
+![dry run](screenshots3/Part10_Task23_logrotate_dry_run.png){#fig-3-28 width=90%}
+![force verify](screenshots3/Part10_Task24_force_rotation_verify.png){#fig-3-29 width=90%}
+![remote forward](screenshots3/Part10_Task25_rsyslog_remote_forward.png){#fig-3-30 width=90%}
+
+---
+
+## Модуль 11. Контейнеризация (Podman)
+
+### 4.1. Тестовые задания
+
+#### 4.1.1. Podman
+**Вопрос:** Флаг `--rm`.
+**Ответ:** Удаляет контейнер после завершения.
+**Объяснение:** Одноразовые контейнеры.
+![Ответ](screenshots3/Part11_Test1_Answer.png){#fig-4-01 width=90%}
+
+#### 4.1.2. Podman 2
+**Вопрос:** Безопасность.
+**Ответ:** Работа без root и демона.
+**Объяснение:** Daemonless архитектура.
+![Ответ](screenshots3/Part11_Test1_Passed.png){#fig-4-02 width=90%}
+
+#### 4.1.3. Podman 3
+**Вопрос:** Компоненты.
+**Ответ:** Системный демон не нужен.
+**Объяснение:** Podman запускается напрямую.
+![Ответ](screenshots3/Part11_Test2_Passed.png){#fig-4-03 width=90%}
+
+#### 4.1.4. Podman 4
+**Вопрос:** Проброс портов.
+**Ответ:** `-p 8080:80`.
+**Объяснение:** Хост-порт:порт-контейнера.
+![Ответ](screenshots3/Part11_Test3_Passed.png){#fig-4-04 width=90%}
+
+#### 4.1.5. Podman 5
+**Вопрос:** Монтирование.
+**Ответ:** `-v host:container`.
+**Объяснение:** Проброс директорий.
+![Ответ](screenshots3/Part11_Test4_Passed.png){#fig-4-05 width=90%}
+
+#### 4.1.6. Podman 6
+**Вопрос:** Интерактивность.
+**Ответ:** `-it`.
+**Объяснение:** Открывает терминал.
+![Ответ](screenshots3/Part11_Test5_Passed.png){#fig-4-06 width=90%}
+
+#### 4.1.7. Podman 7
+**Вопрос:** Все контейнеры.
+**Ответ:** `ps -a`.
+**Объяснение:** Показывает остановленные тоже.
+![Ответ](screenshots3/Part11_Test6_Passed.png){#fig-4-07 width=90%}
+
+#### 4.1.8. Podman 8
+**Вопрос:** Ресурсы.
+**Ответ:** `podman stats`.
+**Объяснение:** Мониторинг CPU и RAM.
+![Ответ](screenshots3/Part11_Test7_Passed.png){#fig-4-08 width=90%}
+
+#### 4.1.9. Podman 9
+**Вопрос:** Фоновый режим.
+**Ответ:** `-d`.
+**Объяснение:** Detached mode.
+![Ответ](screenshots3/Part11_Test8_Passed.png){#fig-4-09 width=90%}
+
+#### 4.1.10. Podman 10
+**Вопрос:** Kubernetes.
+**Ответ:** Grafana Loki.
+**Объяснение:** Легкое логирование по меткам.
+![Ответ](screenshots3/Part11_Test9_Passed.png){#fig-4-10 width=90%}
+
+#### 4.1.11. Podman 11
+**Вопрос:** Отличие от Docker.
+**Ответ:** Нет демона.
+**Объяснение:** Архитектурное отличие.
+![Ответ](screenshots3/Part11_Test10_Answer.png){#fig-4-11 width=90%}
+
+#### 4.1.12. Podman 12
+**Вопрос:** `systemctl daemon-reload`.
+**Ответ:** Перечитывает unit-файлы.
+**Объяснение:** Применяет изменения конфигурации.
+![Ответ](screenshots3/Part11_Test11_Passed.png){#fig-4-12 width=90%}
+
+#### 4.1.13. Podman 13
+**Вопрос:** Логи контейнера.
+**Ответ:** `journalctl -u ...`.
+**Объяснение:** Просмотр логов через systemd.
+![Ответ](screenshots3/Part11_Test12_Passed.png){#fig-4-13 width=90%}
+
+#### 4.1.14. Podman 14
+**Вопрос:** Общие вопросы.
+**Ответ:** Тест пройден.
+**Объяснение:** Проверка знаний.
+![Ответ](screenshots3/Part11_Test13_Passed.png){#fig-4-14 width=90%}
+
+### 4.2. Интерактивные задания
+
+#### 4.2.1. Основы работы с контейнерами
+**Описание:** Установлен Podman. Запущен контейнер. Запущен Nginx. Смонтирована локальная папка с HTML.
+![install podman](screenshots3/Part11_Task1_install_podman.png){#fig-4-15 width=90%}
+![run container](screenshots3/Part11_Task2_run_container.png){#fig-4-16 width=90%}
+![run nginx](screenshots3/Part11_Task3_run_nginx_container.png){#fig-4-17 width=90%}
+![mount html](screenshots3/Part11_Task4_mount_html_folder.png){#fig-4-18 width=90%}
+
+#### 4.2.2. Ограничения и кастомные образы
+**Описание:** Запущен контейнер с ограничением памяти. Изучено поведение при исчерпании памяти. Собран кастомный образ Nginx. Сохранен и загружен образ.
+![100mb limit](screenshots3/Part11_Task5_nginx_100mb_limit.png){#fig-4-19 width=90%}
+![oom behavior](screenshots3/Part11_Task6_oom_behavior.png){#fig-4-20 width=90%}
+![build custom](screenshots3/Part11_Task7_build_custom_nginx.png){#fig-4-21 width=90%}
+![save load](screenshots3/Part11_Task8_save_and_load_image.png){#fig-4-22 width=90%}
+
+---
+
+## Итоговые результаты
+
+### 5.1. Подтверждение прохождения курсов
+В ходе выполнения третьей части курса все промежуточные тесты были успешно пройдены.
+
+![Тема 1](screenshots3/Grade_Part3_1.png){#fig-5-01 width=90%}
+![Тема 2](screenshots3/Grade_Part3_2.png){#fig-5-02 width=90%}
+![Тема 3](screenshots3/Grade_Part3_3.png){#fig-5-03 width=90%}
+![Тема 4](screenshots3/Grade_Part3_4.png){#fig-5-04 width=90%}
+![Тема 5](screenshots3/Grade_Part3_5.png){#fig-5-05 width=90%}
+![Тема 6](screenshots3/Grade_Part3_6.png){#fig-5-06 width=90%}
+![Тема 7](screenshots3/Grade_Part3_7.png){#fig-5-07 width=90%}
+![Тема 8](screenshots3/Grade_Part3_8.png){#fig-5-08 width=90%}
+![Тема 9](screenshots3/Grade_Part3_9.png){#fig-5-09 width=90%}
+![Тема 10](screenshots3/Grade_Part3_10.png){#fig-5-10 width=90%}
+![Тема 11](screenshots3/Grade_Part3_11.png){#fig-5-11 width=90%}
+![Тема 12](screenshots3/Grade_Part3_12.png){#fig-5-12 width=90%}
+![Тема 13](screenshots3/Grade_Part3_13.png){#fig-5-13 width=90%}
+![Тема 14](screenshots3/Grade_Part3_14.png){#fig-5-14 width=90%}
+![Тема 15](screenshots3/Grade_Part3_15.png){#fig-5-15 width=90%}
+![Тема 16](screenshots3/Grade_Part3_16.png){#fig-5-16 width=90%}
+
+---
+
+# Выводы
+
+В ходе выполнения третьей части внешнего курса были освоены навыки базовой диагностики сети, настройки безопасного SSH-доступа, работы с системными логами, а также основы контейнеризации с использованием Podman. Все практические задания и тесты выполнены успешно.
